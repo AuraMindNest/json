@@ -1,0 +1,259 @@
+[[header]]
+== `storage++_++ptr`
+
+[#author .author]#Variable-length containers in this library all use
+dynamically allocated memory# +
+[#revdate]#to store their contents. Callers can gain control over the
+strategy used for#
+
+[[content]]
+[[preamble]]
+allocation by specifying a
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] in select
+constructors and function parameter lists. A
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] has these
+properties:
+
+* A storage pointer always points to a valid, type-erased
+++{++ref++_++memory++_++resource}.
+* Default-constructed storage pointers reference the
+link:#default_memory_resource[default resource], an
+implementation-defined instance which always uses the equivalent of
+global operator new and delete.
+* Storage pointers constructed from a ++{++ref++_++memory++_++resource}
+or ++{++ref++_++polymorphic++_++allocator} do not acquire ownership; the
+caller is responsible for ensuring that the lifetime of the resource
+extends until it is no longer referenced.
+* A storage pointer obtained from
+link:#ref_make_shared_resource[++[++ref++_++make++_++shared++_++resource++]++]
+acquires shared ownership of the memory resource; the lifetime of the
+resource is extended until all copies of the storage pointer are
+destroyed.
+* The storage pointer remembers the value of
+link:#ref_is_deallocate_trivial[++[++ref++_++is++_++deallocate++_++trivial++]++]
+before type-erasing the resource, allowing the value to be queried at
+run-time.
+
+This lists all of the allocation-related types and functions available
+when using the library:
+
+.Table 1. Functions and Types
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Name |Description
+|link:#ref_get_null_resource[++[++ref++_++get++_++null++_++resource++]++]
+|Returns a pointer to a memory resource instance which always throws an
+exception upon allocation. This is used to to achieve the invariant that
+no parsing or container operation will dynamically allocate memory.
+
+|link:#ref_is_deallocate_trivial[++[++ref++_++is++_++deallocate++_++trivial++]++]
+|A customization point allowing a memory resource type to indicate that
+calls to deallocate are trivial.
+
+|link:#ref_make_shared_resource[++[++ref++_++make++_++shared++_++resource++]++]
+|A function returning a smart pointer with shared ownership of a newly
+allocated memory resource.
+
+|++{++ref++_++memory++_++resource} |The abstract base class representing
+an allocator.
+
+|link:#ref_monotonic_resource[++[++ref++_++monotonic++_++resource++]++]
+|A memory resource which allocates large blocks of memory and has a
+trivial deallocate function. Allocated memory is not freed until the
+resource is destroyed, making it fast for parsing but not suited for
+performing modifications.
+
+|++{++ref++_++polymorphic++_++allocator} |An ++{++req++_++Allocator}
+which uses a reference to a ++{++ref++_++memory++_++resource} to perform
+allocations.
+
+|link:#ref_static_resource[++[++ref++_++static++_++resource++]++] |A
+memory resource that uses a single caller provided buffer. No dynamic
+allocations are used. This is fast for parsing but not suited for
+performing modifications.
+
+|link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] |A smart
+pointer through which a ++{++ref++_++memory++_++resource} is managed and
+accessed.
+|===
+
+[[_default_memory_resource]]
+=== Default Memory Resource
+
+The default memory resource uses the global `operator new` and
+`operator delete` to allocate memory. This resource is not reference
+counted and has a non-trivial deallocate function. All
+default-constructed
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] objects
+reference the same memory resource:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_1,indent=0]
+----
+
+Default-constructed library containers use the default memory resource:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_2,indent=0]
+----
+
+The default memory resource is well suited for general usage. It offers
+reasonable performance for parsing, and conservative memory usage for
+modification of the contents of containers.
+
+[width="100%",cols="50%,50%",]
+|===
+a|
+Note
+
+|This memory resource is not guaranteed to be the same as the result of
+`boost::container::pmr::get++_++default++_++resource`. It also cannot be
+changed with `boost::container::pmr::set++_++default++_++resource`.
+|===
+
+[[_monotonic_resource]]
+=== Monotonic Resource
+
+Consider the pattern of memory allocation during parsing: when an array,
+object, or string is encountered the parser accumulates elements in its
+temporary storage area. When all of the elements are known, a single
+memory allocation is requested from the resource when constructing the
+value. Thus, parsing only allocates and constructs containers at their
+final size. Memory is not reallocated; that is, a memory buffer never
+needs to grow by allocating a new larger buffer and deallocating the
+previous buffer.
+
+The
+link:#ref_monotonic_resource[++[++ref++_++monotonic++_++resource++]++]
+optimizes this memory allocation pattern by allocating increasingly
+large blocks of global memory internally and parceling those blocks out
+in smaller pieces to fulfill allocation requests. It has a trivial
+deallocate function. The monotonic resource does not actually deallocate
+memory until the resource is destroyed. Thus, it is ideally suited for
+the use-case where JSON is parsed, and the resulting value is then
+inspected but not modified.
+
+The resource to use when constructing values may be specified in calls
+to link:#ref_parse[++[++ref++_++parse++]++] as shown here:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_3,indent=0]
+----
+
+Or, to parse into a value with shared ownership of the memory resource:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_4,indent=0]
+----
+
+A monotonic resource may be optionally constructed with an initial
+buffer to use first, before going to the heap. This allows the caller to
+use stack space and avoid dynamic allocations for most parsed JSON,
+falling back to dynamic allocation from the heap if the input JSON is
+larger than average, as shown here:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_5,indent=0]
+----
+
+[[_static_resource]]
+=== Static Resource
+
+A link:#ref_static_resource[++[++ref++_++static++_++resource++]++]
+constructs from a caller-provided buffer, and satisfies all memory
+allocation requests from the buffer. Once the buffer is exhausted,
+subsequent calls to allocate throw the exception `std::bad++_++alloc`.
+The resource offers a simple invariant: dynamic heap allocations are
+never performed.
+
+To use the resource, construct it with a local buffer:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_6,indent=0]
+----
+
+[[_null_resource]]
+=== Null Resource
+
+The function
+link:#ref_get_null_resource[++[++ref++_++get++_++null++_++resource++]++]
+returns a global instance of the null resource. This resource offers a
+simple invariant: all calls to allocate will throw the exception
+`std::bad++_++alloc`. An instance of the null resource can be used to
+make parsing guarantee that allocations from the heap are never made.
+This is explored in more detail in a later section.
+
+[[_allocator_propagation]]
+=== Allocator Propagation
+
+The containers link:#ref_array[++[++ref++_++array++]++],
+link:#ref_object[++[++ref++_++object++]++], and
+link:#ref_value[++[++ref++_++value++]++] all propagate the memory
+resource they were constructed with to child elements:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_7,indent=0]
+----
+
+This propagation acts recursively, containers within containers will all
+have the resource propagated. Once a container is constructed, its
+memory resource can never be changed.
+
+[[_resource_lifetime]]
+=== Resource Lifetime
+
+It is important to note that
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] supports both
+shared-ownership and reference lifetime models. Construction from a
+memory resource pointer does not transfer ownership:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_8,indent=0]
+----
+
+When using a memory resource in this fashion, including the case where a
+storage pointer or container is constructed from a
+++{++ref++_++polymorphic++_++allocator}, the caller must ensure that the
+lifetime of the resource is extended until it is no longer referenced by
+any variables; otherwise, undefined behavior is possible.
+
+Shared ownership is achieved using the function
+link:#ref_make_shared_resource[++[++ref++_++make++_++shared++_++resource++]++],
+which creates a new, reference-counted memory resource using a dynamic
+memory allocation and returns it as a
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++]:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_9,indent=0]
+----
+
+When a storage pointer is constructed this way, the lifetime of the
+referenced memory resource is extended until all variables which
+reference it are destroyed.
+
+[[_user_defined_resource]]
+=== User-Defined Resource
+
+To implement custom memory allocation strategies, derive your class from
+++{++ref++_++memory++_++resource} and implement the functions
+`do++_++allocate`, `do++_++deallocate`, and `do++_++is++_++equal` as
+seen in this example below, which logs each operation it performs to the
+console:
+
+[source,highlight]
+----
+Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_10,indent=0]
+----
+
+[[footer]]
+[[footer-text]]
+Last updated 2025-12-05 19:08:33 UTC
