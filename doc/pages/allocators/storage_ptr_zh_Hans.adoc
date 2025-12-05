@@ -1,259 +1,202 @@
 [[header]]
-== `storage++_++ptr`
+== `存储指针`
 
-[#author .author]#Variable-length containers in this library all use
-dynamically allocated memory# +
-[#revdate]#to store their contents. Callers can gain control over the
-strategy used for#
+[#author .author]#本库中的变长容器均使用动态分配内存# +
+[#revdate]#来存储其内容。调用方可通过在特定构造函数和函数参数列表中指定#
 
 [[content]]
 [[preamble]]
-allocation by specifying a
-link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] in select
-constructors and function parameter lists. A
-link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] has these
-properties:
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++]
+来掌控分配策略。link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++]
+具有以下特性：
 
-* A storage pointer always points to a valid, type-erased
-++{++ref++_++memory++_++resource}.
-* Default-constructed storage pointers reference the
-link:#default_memory_resource[default resource], an
-implementation-defined instance which always uses the equivalent of
-global operator new and delete.
-* Storage pointers constructed from a ++{++ref++_++memory++_++resource}
-or ++{++ref++_++polymorphic++_++allocator} do not acquire ownership; the
-caller is responsible for ensuring that the lifetime of the resource
-extends until it is no longer referenced.
-* A storage pointer obtained from
+* 存储指针始终指向一个有效的、经过类型擦除的
+++{++ref++_++memory++_++resource}。
+* 默认构造的存储指针引用的是link:#default_memory_resource[默认资源]——一个由实现定义的实例，该实例始终使用等效于全局
+operator new 和 operator delete 的方式。
+* 由 ++{++ref++_++memory++_++resource} 或
+++{++ref++_++polymorphic++_++allocator}
+构造的存储指针不获取所有权；调用方需确保资源生命周期持续至不再被引用为止。
+* 从
 link:#ref_make_shared_resource[++[++ref++_++make++_++shared++_++resource++]++]
-acquires shared ownership of the memory resource; the lifetime of the
-resource is extended until all copies of the storage pointer are
-destroyed.
-* The storage pointer remembers the value of
+获取的存储指针将获得内存资源的共享所有权；资源生命周期将延长至该存储指针的所有副本均被销毁为止。
+* 存储指针会在类型擦除资源前记住
 link:#ref_is_deallocate_trivial[++[++ref++_++is++_++deallocate++_++trivial++]++]
-before type-erasing the resource, allowing the value to be queried at
-run-time.
+的值，从而允许在运行时查询该值。
 
-This lists all of the allocation-related types and functions available
-when using the library:
+以下列出使用本库时可用的所有分配相关类型和函数：
 
-.Table 1. Functions and Types
+.表 1. 函数与类型
 [width="100%",cols="50%,50%",options="header",]
 |===
-|Name |Description
+|名称 |描述
 |link:#ref_get_null_resource[++[++ref++_++get++_++null++_++resource++]++]
-|Returns a pointer to a memory resource instance which always throws an
-exception upon allocation. This is used to to achieve the invariant that
-no parsing or container operation will dynamically allocate memory.
+|返回指向内存资源实例的指针，该实例在分配时始终抛出异常。此机制用于确保解析或容器操作不会动态分配内存的不变式。
 
 |link:#ref_is_deallocate_trivial[++[++ref++_++is++_++deallocate++_++trivial++]++]
-|A customization point allowing a memory resource type to indicate that
-calls to deallocate are trivial.
+|一个定制点，允许内存资源类型表明其释放调用是平凡的。
 
 |link:#ref_make_shared_resource[++[++ref++_++make++_++shared++_++resource++]++]
-|A function returning a smart pointer with shared ownership of a newly
-allocated memory resource.
+|返回智能指针的函数，该指针对新分配的内存资源具有共享所有权。
 
-|++{++ref++_++memory++_++resource} |The abstract base class representing
-an allocator.
+|++{++ref++_++memory++_++resource} |表示分配器的抽象基类。
 
 |link:#ref_monotonic_resource[++[++ref++_++monotonic++_++resource++]++]
-|A memory resource which allocates large blocks of memory and has a
-trivial deallocate function. Allocated memory is not freed until the
-resource is destroyed, making it fast for parsing but not suited for
-performing modifications.
+|一种内存资源，可分配大块内存且具有平凡的释放函数。已分配内存在资源销毁前不会被释放，使其在解析时速度较快，但不适合执行修改操作。
 
-|++{++ref++_++polymorphic++_++allocator} |An ++{++req++_++Allocator}
-which uses a reference to a ++{++ref++_++memory++_++resource} to perform
-allocations.
+|++{++ref++_++polymorphic++_++allocator} |一种
+++{++req++_++Allocator}，通过引用 ++{++ref++_++memory++_++resource}
+执行分配操作。
 
-|link:#ref_static_resource[++[++ref++_++static++_++resource++]++] |A
-memory resource that uses a single caller provided buffer. No dynamic
-allocations are used. This is fast for parsing but not suited for
-performing modifications.
+|link:#ref_static_resource[++[++ref++_++static++_++resource++]++]
+|使用单个调用方提供缓冲区的内存资源。不使用动态分配。解析时速度较快，但不适合执行修改操作。
 
-|link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] |A smart
-pointer through which a ++{++ref++_++memory++_++resource} is managed and
-accessed.
+|link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++]
+|一种智能指针，用于管理和访问 ++{++ref++_++memory++_++resource}。
 |===
 
 [[_default_memory_resource]]
-=== Default Memory Resource
+=== 默认内存资源
 
-The default memory resource uses the global `operator new` and
-`operator delete` to allocate memory. This resource is not reference
-counted and has a non-trivial deallocate function. All
-default-constructed
-link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] objects
-reference the same memory resource:
+默认内存资源使用全局 `operator new` 和 `operator delete`
+分配内存。此资源不进行引用计数且具有非平凡的释放函数。所有默认构造的
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++]
+对象均引用同一内存资源：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_1,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_1,indent=0]
 ----
 
-Default-constructed library containers use the default memory resource:
+默认构造的库容器使用默认内存资源：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_2,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_2,indent=0]
 ----
 
-The default memory resource is well suited for general usage. It offers
-reasonable performance for parsing, and conservative memory usage for
-modification of the contents of containers.
+默认内存资源非常适合常规使用场景。它在解析时提供合理性能，并在修改容器内容时保持保守的内存使用策略。
 
 [width="100%",cols="50%,50%",]
 |===
 a|
-Note
+注意
 
-|This memory resource is not guaranteed to be the same as the result of
-`boost::container::pmr::get++_++default++_++resource`. It also cannot be
-changed with `boost::container::pmr::set++_++default++_++resource`.
+|此内存资源不保证与
+`boost::container::pmr::get++_++default++_++resource`
+的结果相同，也无法通过
+`boost::container::pmr::set++_++default++_++resource` 更改。
 |===
 
 [[_monotonic_resource]]
-=== Monotonic Resource
+=== 单调资源
 
-Consider the pattern of memory allocation during parsing: when an array,
-object, or string is encountered the parser accumulates elements in its
-temporary storage area. When all of the elements are known, a single
-memory allocation is requested from the resource when constructing the
-value. Thus, parsing only allocates and constructs containers at their
-final size. Memory is not reallocated; that is, a memory buffer never
-needs to grow by allocating a new larger buffer and deallocating the
-previous buffer.
+考虑解析期间的内存分配模式：当遇到数组、对象或字符串时，解析器会在其临时存储区域累积元素。当所有元素已知后，构造值时会向资源请求单次内存分配。因此，解析过程仅以最终尺寸分配和构造容器。内存不会重新分配，即内存缓冲区永远不需要通过分配新的更大缓冲区并释放先前缓冲区来实现增长。
 
-The
 link:#ref_monotonic_resource[++[++ref++_++monotonic++_++resource++]++]
-optimizes this memory allocation pattern by allocating increasingly
-large blocks of global memory internally and parceling those blocks out
-in smaller pieces to fulfill allocation requests. It has a trivial
-deallocate function. The monotonic resource does not actually deallocate
-memory until the resource is destroyed. Thus, it is ideally suited for
-the use-case where JSON is parsed, and the resulting value is then
-inspected but not modified.
+通过内部分配递增的大块全局内存，并将这些内存块分割成较小片段以满足分配请求，从而优化此内存分配模式。它具有平凡的释放函数。单调资源在销毁前实际上不会释放内存。因此，它非常适用于解析
+JSON 后检查结果值但不进行修改的场景。
 
-The resource to use when constructing values may be specified in calls
-to link:#ref_parse[++[++ref++_++parse++]++] as shown here:
+构造值时使用的资源可在调用 link:#ref_parse[++[++ref++_++parse++]++]
+时指定，如下所示：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_3,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_3,indent=0]
 ----
 
-Or, to parse into a value with shared ownership of the memory resource:
-
-[source,highlight]
-----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_4,indent=0]
-----
-
-A monotonic resource may be optionally constructed with an initial
-buffer to use first, before going to the heap. This allows the caller to
-use stack space and avoid dynamic allocations for most parsed JSON,
-falling back to dynamic allocation from the heap if the input JSON is
-larger than average, as shown here:
+或解析为具有内存资源共享所有权的值：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_5,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_4,indent=0]
+----
+
+单调资源可选择构造时使用初始缓冲区（在转向堆之前）。这允许调用方使用栈空间，并为大多数解析的
+JSON 避免动态分配，若输入 JSON
+大于平均值则回退到堆的动态分配，如下所示：
+
+[source,highlight]
+----
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_5,indent=0]
 ----
 
 [[_static_resource]]
-=== Static Resource
+=== 静态资源
 
-A link:#ref_static_resource[++[++ref++_++static++_++resource++]++]
-constructs from a caller-provided buffer, and satisfies all memory
-allocation requests from the buffer. Once the buffer is exhausted,
-subsequent calls to allocate throw the exception `std::bad++_++alloc`.
-The resource offers a simple invariant: dynamic heap allocations are
-never performed.
+link:#ref_static_resource[++[++ref++_++static++_++resource++]++]
+由调用方提供的缓冲区构造，并从该缓冲区满足所有内存分配请求。缓冲区耗尽后，后续分配调用将抛出
+`std::bad++_++alloc` 异常。该资源提供简单不变式：永不执行动态堆分配。
 
-To use the resource, construct it with a local buffer:
+使用该资源时，需通过本地缓冲区构造：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_6,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_6,indent=0]
 ----
 
 [[_null_resource]]
-=== Null Resource
+=== 空资源
 
-The function
+函数
 link:#ref_get_null_resource[++[++ref++_++get++_++null++_++resource++]++]
-returns a global instance of the null resource. This resource offers a
-simple invariant: all calls to allocate will throw the exception
-`std::bad++_++alloc`. An instance of the null resource can be used to
-make parsing guarantee that allocations from the heap are never made.
-This is explored in more detail in a later section.
+返回空资源的全局实例。该资源提供简单不变式：所有分配调用均会抛出
+`std::bad++_++alloc`
+异常。空资源实例可用于确保解析过程永不执行堆分配。后续章节将对此进行详细探讨。
 
 [[_allocator_propagation]]
-=== Allocator Propagation
+=== 分配器传播
 
-The containers link:#ref_array[++[++ref++_++array++]++],
-link:#ref_object[++[++ref++_++object++]++], and
-link:#ref_value[++[++ref++_++value++]++] all propagate the memory
-resource they were constructed with to child elements:
+容器
+link:#ref_array[++[++ref++_++array++]++]、link:#ref_object[++[++ref++_++object++]++]
+和 link:#ref_value[++[++ref++_++value++]++]
+均将其构造时使用的内存资源传播至子元素：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_7,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_7,indent=0]
 ----
 
-This propagation acts recursively, containers within containers will all
-have the resource propagated. Once a container is constructed, its
-memory resource can never be changed.
+此传播行为具有递归性，容器内的所有容器均将传播该资源。容器一旦构造完成，其内存资源便不可更改。
 
 [[_resource_lifetime]]
-=== Resource Lifetime
+=== 资源生命周期
 
-It is important to note that
-link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] supports both
-shared-ownership and reference lifetime models. Construction from a
-memory resource pointer does not transfer ownership:
+需注意 link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++]
+同时支持共享所有权和引用生命周期模型。通过内存资源指针构造不会转移所有权：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_8,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_8,indent=0]
 ----
 
-When using a memory resource in this fashion, including the case where a
-storage pointer or container is constructed from a
-++{++ref++_++polymorphic++_++allocator}, the caller must ensure that the
-lifetime of the resource is extended until it is no longer referenced by
-any variables; otherwise, undefined behavior is possible.
+以此方式使用内存资源时（包括通过 ++{++ref++_++polymorphic++_++allocator}
+构造存储指针或容器的情况），调用方必须确保资源生命周期持续至所有变量不再引用该资源为止；否则可能导致未定义行为。
 
-Shared ownership is achieved using the function
-link:#ref_make_shared_resource[++[++ref++_++make++_++shared++_++resource++]++],
-which creates a new, reference-counted memory resource using a dynamic
-memory allocation and returns it as a
-link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++]:
+共享所有权通过函数
+link:#ref_make_shared_resource[++[++ref++_++make++_++shared++_++resource++]++]
+实现，该函数使用动态内存分配创建新的引用计数内存资源，并将其作为
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] 返回：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_9,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_9,indent=0]
 ----
 
-When a storage pointer is constructed this way, the lifetime of the
-referenced memory resource is extended until all variables which
-reference it are destroyed.
+以此方式构造存储指针时，所引用内存资源的生命周期将延长至所有引用它的变量均被销毁为止。
 
 [[_user_defined_resource]]
-=== User-Defined Resource
+=== 用户自定义资源
 
-To implement custom memory allocation strategies, derive your class from
-++{++ref++_++memory++_++resource} and implement the functions
-`do++_++allocate`, `do++_++deallocate`, and `do++_++is++_++equal` as
-seen in this example below, which logs each operation it performs to the
-console:
+要实现自定义内存分配策略，请从 ++{++ref++_++memory++_++resource}
+派生类并实现函数 `do++_++allocate`、`do++_++deallocate` 和
+`do++_++is++_++equal`，如下例所示（该示例将每个操作记录到控制台）：
 
 [source,highlight]
 ----
-Unresolved directive in tmpekp9r2rz.adoc - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_10,indent=0]
+tmpeo_0ch37.adoc 中的未解析指令 - include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_10,indent=0]
 ----
 
 [[footer]]
 [[footer-text]]
-Last updated 2025-12-05 19:08:33 UTC
+最后更新于 2025-12-05 19:08:09 UTC
