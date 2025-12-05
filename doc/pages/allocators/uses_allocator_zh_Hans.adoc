@@ -1,47 +1,32 @@
 [[header]]
-== Uses-allocator Construction
+== 使用分配器构造
 
-[#author .author]#To support code bases which are already using
-polymorphic allocators, the# +
-[#revdate]#containers in this library support
-++{++std++_++uses++_++allocator} construction. For#
+[#author .author]#为了支持已经在使用多态分配器的代码库，本库中的# +
+[#revdate]#容器支持++{++std++_++uses++_++allocator}构造。对于#
 
 [[content]]
-link:#ref_array[++[++ref++_++array++]++],
-link:#ref_object[++[++ref++_++object++]++],
-link:#ref_string[++[++ref++_++string++]++], and
-link:#ref_value[++[++ref++_++value++]++]:
+link:#ref_array[++[++ref++_++array++]++]、link:#ref_object[++[++ref++_++object++]++]、link:#ref_string[++[++ref++_++string++]++]和link:#ref_value[++[++ref++_++value++]++]：
 
-* The nested type `allocator++_++type` is an alias for a
-++{++ref++_++polymorphic++_++allocator}.
-* All eligible constructors which accept
-link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] will also
-accept an instance of ++{++ref++_++polymorphic++_++allocator} in the
-same argument position.
-* The member function `get++_++allocator` returns an instance of
-++{++ref++_++polymorphic++_++allocator} constructed from the
-++{++ref++_++memory++_++resource} used by the container. Ownership of
-this memory resource is not transferred.
+* 嵌套类型`allocator++_++type`是++{++ref++_++polymorphic++_++allocator}的别名。
+* 所有接受link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++]的符合条件的构造函数，也将在相同的参数位置接受一个++{++ref++_++polymorphic++_++allocator}的实例。
+* 成员函数`get++_++allocator`返回一个由容器使用的++{++ref++_++memory++_++resource}构造的++{++ref++_++polymorphic++_++allocator}实例。该内存资源的所有权不会被转移。
 
-Practically, this means that when a library container type is used in a
-standard container that uses a polymorphic allocator, the allocator will
-propagate to the JSON type. For example:
+实际上，这意味着当库容器类型被用于一个使用多态分配器的标准容器中时，该分配器将传播到JSON类型。例如：
 
 [source,highlight]
 ----
-Unresolved directive in tmpyfyusje5.adoc - include::../../../test/doc_uses_allocator.cpp[tag=doc_uses_allocator_1,indent=0]
+Unresolved directive in tmpzekv2frc.adoc - include::../../../test/doc_uses_allocator.cpp[tag=doc_uses_allocator_1,indent=0]
 ----
 
-Library containers can be constructed from polymorphic allocators:
+库容器可以从多态分配器构造：
 
 [source,highlight]
 ----
-Unresolved directive in tmpyfyusje5.adoc - include::../../../test/doc_uses_allocator.cpp[tag=doc_uses_allocator_2,indent=0]
+Unresolved directive in tmpzekv2frc.adoc - include::../../../test/doc_uses_allocator.cpp[tag=doc_uses_allocator_2,indent=0]
 ----
 
-The polymorphic allocator is propagated recursively. Child elements of
-child elements will use the same memory resource as the parent.
+多态分配器被递归传播。子元素的子元素将使用与父元素相同的内存资源。
 
 [[footer]]
 [[footer-text]]
-Last updated 2025-12-05 19:10:15 UTC
+最后更新于2025年12月5日 19:10:01 UTC
