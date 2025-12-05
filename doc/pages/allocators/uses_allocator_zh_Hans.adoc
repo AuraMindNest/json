@@ -1,0 +1,47 @@
+[[header]]
+== Uses-allocator Construction
+
+[#author .author]#To support code bases which are already using
+polymorphic allocators, the# +
+[#revdate]#containers in this library support
+++{++std++_++uses++_++allocator} construction. For#
+
+[[content]]
+link:#ref_array[++[++ref++_++array++]++],
+link:#ref_object[++[++ref++_++object++]++],
+link:#ref_string[++[++ref++_++string++]++], and
+link:#ref_value[++[++ref++_++value++]++]:
+
+* The nested type `allocator++_++type` is an alias for a
+++{++ref++_++polymorphic++_++allocator}.
+* All eligible constructors which accept
+link:#ref_storage_ptr[++[++ref++_++storage++_++ptr++]++] will also
+accept an instance of ++{++ref++_++polymorphic++_++allocator} in the
+same argument position.
+* The member function `get++_++allocator` returns an instance of
+++{++ref++_++polymorphic++_++allocator} constructed from the
+++{++ref++_++memory++_++resource} used by the container. Ownership of
+this memory resource is not transferred.
+
+Practically, this means that when a library container type is used in a
+standard container that uses a polymorphic allocator, the allocator will
+propagate to the JSON type. For example:
+
+[source,highlight]
+----
+Unresolved directive in tmpyfyusje5.adoc - include::../../../test/doc_uses_allocator.cpp[tag=doc_uses_allocator_1,indent=0]
+----
+
+Library containers can be constructed from polymorphic allocators:
+
+[source,highlight]
+----
+Unresolved directive in tmpyfyusje5.adoc - include::../../../test/doc_uses_allocator.cpp[tag=doc_uses_allocator_2,indent=0]
+----
+
+The polymorphic allocator is propagated recursively. Child elements of
+child elements will use the same memory resource as the parent.
+
+[[footer]]
+[[footer-text]]
+Last updated 2025-12-05 19:10:15 UTC
