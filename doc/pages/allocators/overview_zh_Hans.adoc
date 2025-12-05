@@ -1,17 +1,13 @@
 [[header]]
-== Allocators
+== 分配器
 
 [[content]]
-Here we discuss the various allocator models used in the C{plus}{plus}
-standard, followed by an explanation of the model used in this library
-and its benefits. Finally we discuss how the library interoperates with
-existing code that uses polymorphic allocators.
+本节将讨论C{plus}{plus}标准中使用的各种分配器模型，随后解释本库采用的模型及其优势。最后讨论该库如何与使用多态分配器的现有代码进行互操作。
 
-Unresolved directive in tmp8cz4nvmu.adoc -
-include::background.adoc++[]++ Unresolved directive in tmp8cz4nvmu.adoc
-- include::storage++_++ptr.adoc++[]++ Unresolved directive in
-tmp8cz4nvmu.adoc - include::uses++_++allocator.adoc++[]++
+tmp5puu9rg8.adoc 中的未解析指令 - include::background.adoc++[]++
+tmp5puu9rg8.adoc 中的未解析指令 - include::storage++_++ptr.adoc++[]++
+tmp5puu9rg8.adoc 中的未解析指令 - include::uses++_++allocator.adoc++[]++
 
 [[footer]]
 [[footer-text]]
-Last updated 2025-12-05 19:06:45 UTC
+最后更新于2025年12月5日 19:06:34 UTC
