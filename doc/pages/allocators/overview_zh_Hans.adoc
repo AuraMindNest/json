@@ -1,0 +1,17 @@
+[[header]]
+== Allocators
+
+[[content]]
+Here we discuss the various allocator models used in the C{plus}{plus}
+standard, followed by an explanation of the model used in this library
+and its benefits. Finally we discuss how the library interoperates with
+existing code that uses polymorphic allocators.
+
+Unresolved directive in tmp8cz4nvmu.adoc -
+include::background.adoc++[]++ Unresolved directive in tmp8cz4nvmu.adoc
+- include::storage++_++ptr.adoc++[]++ Unresolved directive in
+tmp8cz4nvmu.adoc - include::uses++_++allocator.adoc++[]++
+
+[[footer]]
+[[footer-text]]
+Last updated 2025-12-05 19:06:45 UTC
