@@ -7,34 +7,34 @@ file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 Official repository: https://github.com/boostorg/json
 ////
 
-= Non-Throwing Conversions
-For the case where throwing exceptions is undesirable, Boost.JSON also provides a non-throwing version of <<ref_value_to>>, the function template <<ref_try_value_to>>. It returns {ref_result}, a specialised variant that either holds a value or an {ref_error_code}.
+= 非抛出转换
+对于不希望抛出异常的情况，Boost.JSON 还提供了 &lt;<ref_value_to>&gt; 的非抛出版本，即函数模板 &lt;<ref_try_value_to>&gt;。它返回 {ref_result}，这是一个特化的变体，要么持有一个值，要么持有一个 {ref_error_code}。</ref_try_value_to></ref_value_to>
 
 [NOTE]
-There's no non-throwing equivalent for <<ref_value_from>>. This is simply because we haven't yet encountered a situation where <<ref_value_from>> needed to communicate an error to the caller.
+对于 &lt;<ref_value_from>&gt; 没有非抛出等效函数。这仅仅是因为我们尚未遇到需要 &lt;<ref_value_from>&gt; 向调用者报告错误的情况。</ref_value_from></ref_value_from>
 
-The library provides non-throwing conversions for all the categories of types it supports with <<ref_value_to>>. If a user wants to use it with custom types, an overload of `tag_invoke` of this form needs to be provided:
-
-```
-
-result_for<T, value>::type tag_invoke( const try_value_to_tag< T >&, const value& );
+该库为 &lt;<ref_value_to>&gt; 支持的所有类型类别提供了非抛出转换。如果用户希望将其用于自定义类型，则需要提供如下形式的 `tag_invoke` 重载：</ref_value_to>
 
 ```
 
-For the class `ip_address` from the section <<custom_conversions>> this overload may look like this:
+result_for<t, value="">::type tag_invoke( const try_value_to_tag&lt; T &gt;&amp;, const value&amp; );
+
+```</t,>
+
+对于 &lt;<custom_conversions>&gt; 一节中的类 `ip_address`，此重载可能如下所示：</custom_conversions>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_nothrow_1,indent=0]
 ----
 
-The overload lets us use `ip_address` with <<ref_try_value_to>>.
+该重载使我们能够将 `ip_address` 与 &lt;<ref_try_value_to>&gt; 一起使用。</ref_try_value_to>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_nothrow_2,indent=0]
 ----
 
-If <<ref_try_value_to>> is used with a type, for which there's no `tag_invoke` overload of the form described in this section, but there is one of the form intended for <<ref_value_to>>, then the library still tries to perform the conversion. It uses the throwing overload, and attempts to convert any thrown exception into an {ref_error_code}. Note, though, that such approach will likely be slower then a dedicated overload.
+如果对某个类型使用 &lt;<ref_try_value_to>&gt;，但该类型没有本节所述形式的 `tag_invoke` 重载，而存在用于 &lt;<ref_value_to>&gt; 的形式的重载，则库仍会尝试执行转换。它会使用抛出重载，并尝试将抛出的任何异常转换为 {ref_error_code}。但请注意，这种方法可能比专用重载更慢。</ref_value_to></ref_try_value_to>
 
-The opposite is also true: if there's a `tag_invoke` overload intended for <<ref_try_value_to>>, but not for <<ref_value_to>>, then calling <<ref_value_to>> will invoke the non-throwing overload, then construct a {ref_system_error} from the {ref_error_code} and throw it. Due to these fallbacks, it is recommended that users provide the overload from this section, rather then the other one, if they ever intend to use <<ref_try_value_to>>.
+反之亦然：如果存在用于 &lt;<ref_try_value_to>&gt; 的 `tag_invoke` 重载，但没有用于 &lt;<ref_value_to>&gt; 的重载，则调用 &lt;<ref_value_to>&gt; 将调用非抛出重载，然后从 {ref_error_code} 构造一个 {ref_system_error} 并抛出。由于这些回退机制，建议用户提供本节中的重载，而非另一种重载，如果他们打算使用 &lt;<ref_try_value_to>&gt;。</ref_try_value_to></ref_value_to></ref_value_to></ref_try_value_to>
