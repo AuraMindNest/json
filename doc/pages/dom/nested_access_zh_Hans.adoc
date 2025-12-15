@@ -8,36 +8,36 @@ Official repository: https://github.com/boostorg/json
 ////
 
 [#nested_access]
-= Accessing Deeply Nested Elements
-In order to allow conveniently retrieving and changing deeply nested elements of <<ref_value>> objects the library implements https://datatracker.ietf.org/doc/html/rfc6901[RFC 6901 (JSON Pointer)]:
+= 访问深层嵌套元素
+为方便检索和修改&lt;<ref_value>&gt;对象的深层嵌套元素，本库实现了https://datatracker.ietf.org/doc/html/rfc6901[RFC 6901 (JSON Pointer)]：</ref_value>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_pointer_1,indent=0]
 ----
 
-This is particularly useful when throwing exceptions is undesirable. For example, compare
+这在抛出异常不可取时特别有用。例如，比较
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_pointer_2,indent=0]
 ----
 
-with
+与
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_pointer_3,indent=0]
 ----
 
-The library also allows changing and adding deeply nested elements. The function <<ref_value_set_at_pointer>> traverses the value similarly to <<ref_value_at_pointer>>, but additionally, it can create missing elements in certain cases:
+该库还支持修改和添加深层嵌套元素。函数&lt;<ref_value_set_at_pointer>&gt;的遍历方式与&lt;<ref_value_at_pointer>&gt;类似，但在某些情况下它还能创建缺失的元素：</ref_value_at_pointer></ref_value_set_at_pointer>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_pointer_4,indent=0]
 ----
 
-The specific behavior is controlled by an optional parameter of type <<ref_set_pointer_options>>. For example, here's the same example with a different option:
+具体行为由&lt;<ref_set_pointer_options>&gt;类型的可选参数控制。例如，以下是在不同选项下的相同示例：</ref_set_pointer_options>
 
 [source]
 ----
