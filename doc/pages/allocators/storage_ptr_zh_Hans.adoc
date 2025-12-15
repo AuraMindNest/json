@@ -9,150 +9,139 @@ Official repository: https://github.com/boostorg/json
 ////
 
 = `storage_ptr`
-Variable-length containers in this library all use dynamically allocated memory to store their contents. Callers can gain control over the strategy used for allocation by specifying a <<ref_storage_ptr>> in select constructors and function parameter lists. A <<ref_storage_ptr>> has these properties:
+本库中的可变长度容器均使用动态分配的内存来存储其内容。调用方可通过在特定构造函数和函数参数列表中指定 &lt;&gt; 来获得对分配策略的控制。&lt;&gt; 具有以下属性：
 
-* A storage pointer always points to a valid, type-erased {ref_memory_resource}.
+* 存储指针始终指向一个有效的、类型被擦除的 {ref_memory_resource}。
 
-* Default-constructed storage pointers reference the <<default_memory_resource,default resource>>, an implementation-defined instance which always uses the equivalent of global operator new and delete.
+* 默认构造的存储指针引用 &lt;&gt;，这是一个实现定义的实例，始终使用等效于全局 operator new 和 operator delete 的方式。
 
-* Storage pointers constructed from a {ref_memory_resource} or {ref_polymorphic_allocator} do not acquire ownership; the caller is responsible for ensuring that the lifetime of the resource extends until it is no longer referenced.
+* 从 {ref_memory_resource} 或 {ref_polymorphic_allocator} 构造的存储指针不获取所有权；调用方负责确保资源的生命周期持续到不再被引用为止。
 
-* A storage pointer obtained from <<ref_make_shared_resource>> acquires shared ownership of the memory resource; the lifetime of the resource is extended until all copies of the storage pointer are destroyed.
+* 从 &lt;&gt; 获取的存储指针获得内存资源的共享所有权；资源的生命周期将延长至所有存储指针副本均被销毁为止。
 
-* The storage pointer remembers the value of <<ref_is_deallocate_trivial>> before type-erasing the resource, allowing the value to be queried at run-time.
+* 存储指针在类型擦除资源之前会记住 &lt;&gt; 的值，从而允许在运行时查询该值。
 
-This lists all of the allocation-related types and functions available when using the library:
+以下列出了使用该库时可用的所有分配相关类型和函数：
 
-.Functions and Types
+.函数与类型
 |===
-|Name|Description
+|名称e|描述
 
-| <<ref_get_null_resource>>
-| Returns a pointer to a memory resource instance which always throws an
-  exception upon allocation. This is used to to achieve the invariant that no
-  parsing or container operation will dynamically allocate memory.
+| &lt;&gt;
+| 返回一个指向内存资源实例的指针，该实例在分配时总是抛出异常。这用于实现不变式：任何解析或容器操作都不会动态分配内存。
 
-| <<ref_is_deallocate_trivial>>
-| A customization point allowing a memory resource type to indicate that calls
-  to deallocate are trivial.
+| &lt;&gt;
+| 一个定制点，允许内存资源类型指示解分配调用是平凡的。
 
-| <<ref_make_shared_resource>>
-| A function returning a smart pointer with shared ownership of a newly
-  allocated memory resource.
+| &lt;&gt;
+| 一个函数，返回一个智能指针，该指针具有对新分配内存资源的共享所有权。
 
 | {ref_memory_resource}
-| The abstract base class representing an allocator.
+| 表示分配器的抽象基类。
 
-| <<ref_monotonic_resource>>
-| A memory resource which allocates large blocks of memory and has a trivial
-  deallocate function. Allocated memory is not freed until the resource is
-  destroyed, making it fast for parsing but not suited for performing
-  modifications.
+| &lt;&gt;
+| 一种内存资源，它分配大块内存并具有平凡的解分配函数。分配的内存直到资源被销毁时才会释放，这使得它在解析时速度很快，但不适合执行修改。
 
 | {ref_polymorphic_allocator}
-| An {req_Allocator} which uses a reference to a {ref_memory_resource} to
-  perform allocations.
+| 一种 {req_Allocator}，它使用对 {ref_memory_resource} 的引用来执行分配。
 
-| <<ref_static_resource>>
-| A memory resource that uses a single caller provided buffer. No dynamic
-  allocations are used. This is fast for parsing but not suited for
-  performing modifications.
+| &lt;&gt;
+| 一种使用单个调用方提供缓冲区的内存资源。不使用动态分配。这在解析时速度很快，但不适合执行修改。
 
-| <<ref_storage_ptr>>
-| A smart pointer through which a {ref_memory_resource} is managed and
-  accessed.
+| &lt;&gt;
+| 一种智能指针，通过它来管理和访问 {ref_memory_resource}。
 |===
 
-== Default Memory Resource
-The default memory resource uses the global `operator new` and `operator delete` to allocate memory. This resource is not reference counted and has a non-trivial deallocate function. All default-constructed <<ref_storage_ptr>> objects reference the same memory resource:
+== 默认内存资源
+默认内存资源使用全局 `operator new` 和 `operator delete` 来分配内存。此资源不进行引用计数，并具有非平凡的解分配函数。所有默认构造的 &lt;&gt; 对象均引用相同的内存资源：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_1,indent=0]
 ----
 
-Default-constructed library containers use the default memory resource:
+默认构造的库容器使用默认内存资源：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_2,indent=0]
 ----
 
-The default memory resource is well suited for general usage. It offers reasonable performance for parsing, and conservative memory usage for modification of the contents of containers.
+默认内存资源非常适合一般用途。它在解析时提供合理的性能，并在修改容器内容时具有保守的内存使用。
 
 [NOTE]
-This memory resource is not guaranteed to be the same as the result of `boost::container::pmr::get_default_resource`. It also cannot be changed with `boost::container::pmr::set_default_resource`.
+此内存资源不保证与 `boost::container::pmr::get_default_resource` 的结果相同。它也不能通过 `boost::container::pmr::set_default_resource` 更改。
 
-== Monotonic Resource
-Consider the pattern of memory allocation during parsing: when an array, object, or string is encountered the parser accumulates elements in its temporary storage area. When all of the elements are known, a single memory allocation is requested from the resource when constructing the value. Thus, parsing only allocates and constructs containers at their final size. Memory is not reallocated; that is, a memory buffer never needs to grow by allocating a new larger buffer and deallocating the previous buffer.
+== 单调资源
+考虑解析期间的内存分配模式：当遇到数组、对象或字符串时，解析器在其临时存储区中累积元素。当所有元素都已知时，在构造值时会向资源请求一次内存分配。因此，解析仅在最终大小分配和构造容器。内存不会重新分配；也就是说，内存缓冲区永远不需要通过分配新的更大缓冲区并解分配先前的缓冲区来增长。
 
-The <<ref_monotonic_resource>> optimizes this memory allocation pattern by allocating increasingly large blocks of global memory internally and parceling those blocks out in smaller pieces to fulfill allocation requests. It has a trivial deallocate function. The monotonic resource does not actually deallocate memory until the resource is destroyed. Thus, it is ideally suited for the use-case where JSON is parsed, and the resulting value is then inspected but not modified.
+&lt;&gt; 通过内部分配越来越大的全局内存块，并将这些块分割成较小的部分来满足分配请求，从而优化了此内存分配模式。它具有平凡的解分配函数。单调资源在资源销毁之前实际上不会解分配内存。因此，它非常适合解析 JSON 然后检查结果值但不进行修改的用例。
 
-The resource to use when constructing values may be specified in calls to <<ref_parse>> as shown here:
+构造值时使用的资源可在调用 &lt;&gt; 时指定，如下所示：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_3,indent=0]
 ----
 
-Or, to parse into a value with shared ownership of the memory resource:
+或者，要解析为具有内存资源共享所有权的值：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_4,indent=0]
 ----
 
-A monotonic resource may be optionally constructed with an initial buffer to use first, before going to the heap. This allows the caller to use stack space and avoid dynamic allocations for most parsed JSON, falling back to dynamic allocation from the heap if the input JSON is larger than average, as shown here:
+单调资源可选择构造一个初始缓冲区以首先使用，然后再转向堆。这允许调用方使用栈空间并避免为大多数解析的 JSON 进行动态分配，如果输入的 JSON 大于平均值，则回退到来自堆的动态分配，如下所示：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_5,indent=0]
 ----
 
-== Static Resource
-A <<ref_static_resource>> constructs from a caller-provided buffer, and satisfies all memory allocation requests from the buffer. Once the buffer is exhausted, subsequent calls to allocate throw the exception `std::bad_alloc`. The resource offers a simple invariant: dynamic heap allocations are never performed.
+== 静态资源
+&lt;&gt; 从调用方提供的缓冲区构造，并满足来自该缓冲区的所有内存分配请求。一旦缓冲区耗尽，后续分配调用将抛出异常 `std::bad_alloc`。该资源提供一个简单的不变式：永不执行动态堆分配。
 
-To use the resource, construct it with a local buffer:
+要使用该资源，请使用本地缓冲区构造它：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_6,indent=0]
 ----
 
-== Null Resource
-The function <<ref_get_null_resource>> returns a global instance of the null resource. This resource offers a simple invariant: all calls to allocate will throw the exception `std::bad_alloc`. An instance of the null resource can be used to make parsing guarantee that allocations from the heap are never made. This is explored in more detail in a later section.
+== 空资源
+函数 &lt;&gt; 返回空资源的全局实例。此资源提供一个简单的不变式：所有分配调用都将抛出异常 `std::bad_alloc`。空资源实例可用于确保解析永不从堆分配。这将在后续章节中更详细地探讨。
 
-== Allocator Propagation
-The containers <<ref_array>>, <<ref_object>>, and <<ref_value>> all propagate the memory resource they were constructed with to child elements:
+== 分配器传播
+容器 &lt;&gt;、&lt;&gt; 和 &lt;&gt; 都会将它们构造时使用的内存资源传播给子元素：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_7,indent=0]
 ----
 
-This propagation acts recursively, containers within containers will all have the resource propagated. Once a container is constructed, its memory resource can never be changed.
+这种传播是递归的，容器中的容器都将传播该资源。容器一旦构造，其内存资源就永远无法更改。
 
-== Resource Lifetime
-It is important to note that <<ref_storage_ptr>> supports both shared-ownership and reference lifetime models. Construction from a memory resource pointer does not transfer ownership:
+== 资源生命周期
+需要注意的是，&lt;&gt; 同时支持共享所有权和引用生命周期模型。从内存资源指针构造不会转移所有权：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_8,indent=0]
 ----
 
-When using a memory resource in this fashion, including the case where a storage pointer or container is constructed from a {ref_polymorphic_allocator}, the caller must ensure that the lifetime of the resource is extended until it is no longer referenced by any variables; otherwise, undefined behavior is possible.
+当以这种方式使用内存资源时，包括从 {ref_polymorphic_allocator,多态分配器} 构造存储指针或容器的情况，调用方必须确保资源的生命周期延长至不再被任何变量引用为止；否则，可能会出现未定义行为。
 
-Shared ownership is achieved using the function <<ref_make_shared_resource>>, which creates a new, reference-counted memory resource using a dynamic memory allocation and returns it as a <<ref_storage_ptr>>:
+共享所有权通过函数 &lt;&gt; 实现，该函数使用动态内存分配创建一个新的引用计数内存资源，并将其作为 &lt;&gt; 返回：
 
 [source]
 ----
 include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_9,indent=0]
 ----
 
-When a storage pointer is constructed this way, the lifetime of the referenced memory resource is extended until all variables which reference it are destroyed.
+当以这种方式构造存储指针时，所引用的内存资源的生命周期将延长至所有引用它的变量都被销毁为止。
 
-== User-Defined Resource
-To implement custom memory allocation strategies, derive your class from {ref_memory_resource} and implement the functions `do_allocate`, `do_deallocate`, and `do_is_equal` as seen in this example below, which logs each operation it performs to the console:
+== 用户定义资源
+要实现自定义内存分配策略，请从 {ref_memory_resource,内存资源} 派生类，并实现函数 `do_allocate`、`do_deallocate` 和 `do_is_equal`，如下例所示，该示例将其执行的每个操作记录到控制台：
 
 [source]
 ----
