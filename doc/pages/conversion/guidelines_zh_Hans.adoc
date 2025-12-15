@@ -7,15 +7,15 @@ file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 Official repository: https://github.com/boostorg/json
 ////
 
-= Conversion Customization Guidelines
-With so many options, it can be hard to choose the best way to customise conversion for your type. In this section, we will discuss those options and suggest which to choose when.
+= 转换自定义指南
+由于选项众多，可能难以选择最适合您类型的转换自定义方式。本节将讨论这些选项，并建议在何种情况下选择何种选项。
 
-The first advice is to use one of the library-provided conversions, rather then providing a custom one, unless the resulting format is undesirable. If the library deduces the wrong conversion category, you can opt out by specialising the relevant trait to inherit from `std::false_type`.
+首要建议是使用库提供的转换之一，而非提供自定义转换，除非生成的格式不符合要求。如果库推导出错误的转换类别，您可以通过特化相关特征以继承自 `std::false_type` 来退出。
 
-If library-provided conversions are suitable for you, you have the option to use direct conversions. This also puts the requirement of being default constructible on many of your types.
+如果库提供的转换适合您，您可以选择使用直接转换。这也会要求您的许多类型具有默认可构造性。
 
-The next thing to consider is whether your conversions are intended for internal use, or whether your users are not members of your team. If your users are external, then they will ultimately determine the conditions in which these conversions will be used. Conversely, for internal libraries and applications, you have the full control of usage conditions.
+接下来要考虑的是，您的转换是供内部使用，还是供团队外部用户使用。如果用户是外部的，则最终将由他们决定在何种条件下使用这些转换。相反，对于内部库和应用程序，您拥有对使用条件的完全控制权。
 
-If your users are external, they and not you decide whether throwing exceptions is acceptable. So, in this case it is better to use non-throwing `tag_invoke` overloads. In addition, for customising conversion of composite types, always use `tag_invoke` overload with 2 context parameters. This will allow correct context propagation to elements of composites. This will also allow propagation of exceptions from conversion of elements.
+如果您的用户是外部的，则由他们而非您决定抛出异常是否可接受。因此，在这种情况下，最好使用非抛出的 `tag_invoke` 重载。此外，对于自定义复合类型的转换，始终使用带有两个上下文参数的 `tag_invoke` 重载。这将允许正确地将上下文传播到复合类型的元素，同时也允许传播元素转换中的异常。
 
-Finally, it is worth mentioning that due to the ability to provide conversions to JSON containers without a binary dependency on the library, you don't have to push such dependency on your users. This is particularly relevant for libraries for which interoperation with Boost.JSON is only ancillary.
+最后值得一提的是，由于能够提供对 JSON 容器的转换而无需二进制依赖该库，您不必将此类依赖强加给用户。这对于与 Boost.JSON 的互操作仅是辅助功能的库尤其重要。
