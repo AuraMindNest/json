@@ -10,197 +10,192 @@ Official repository: https://github.com/boostorg/json
 
 [#dom_value]
 = `value`
-JSON documents are represented in memory as instances of <<ref_value>>: a {req_Regular} type which satisfies {req_DefaultConstructible}, {req_CopyConstructible}, {req_CopyAssignable}, {req_MoveConstructible}, {req_MoveAssignable}, and many of the requirements of allocator-aware containers. It is implemented as a https://en.wikipedia.org/wiki/Tagged_union[__variant__] internally, and can dynamically store any of the six defined JSON value types:
+JSON文档在内存中表示为&lt;<ref_value>&gt;的实例：一种{req_Regular}类型，满足{req_DefaultConstructible}、{req_CopyConstructible}、{req_CopyAssignable}、{req_MoveConstructible}、{req_MoveAssignable}以及许多分配器感知容器的要求。它在内部实现为https://en.wikipedia.org/wiki/Tagged_union[__variant__]，并且可以动态存储六种已定义的JSON值类型中的任意一种：</ref_value>
 
-* **null**: A https://en.cppreference.com/w/cpp/utility/variant/monostate[__monostate__] value, equivalent to `nullptr`.
+* **空值**：一种https://en.cppreference.com/w/cpp/utility/variant/monostate[__monostate__]值，等同于`nullptr`。
 
-* **boolean**: A boolean: either `true` or `false`.
+* **布尔值**：布尔类型，取值为`true`或`false`。
 
-* **number**: An integral or floating point value.
+* **数值**：整型或浮点型值。
 
-* **string**: A sequence of zero or more Unicode characters, similar to {std_string}.
+* **字符串**：由零个或多个Unicode字符组成的序列，类似于{std_string}。
 
-* **array**: An ordered list of values, like {std_vector}.
+* **数组**：值的有序列表，类似于{std_vector}。
 
-* **object**: A collection of name/value pairs, also known as an https://en.wikipedia.org/wiki/Associative_array[__associative array__].
+* **对象**：名称/值对的集合，也称为https://en.wikipedia.org/wiki/Associative_array[__关联数组__]。
 
-== Working With Values
-A <<ref_value>> constructed from `nullptr` or default constructed represents a null JSON element:
+== 处理值
+从`nullptr`构造或默认构造的&lt;<ref_value>&gt;表示一个空的JSON元素：</ref_value>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_1,indent=0]
 ----
 
-The member function <<ref_value_kind,`value::kind`>> may be used to query the kind stored in the value. Alternatively, member functions like <<ref_value_is_object,`value::is_object`>> <<ref_value_is_number,`value::is_number`>> may be used to check whether or not the value is a particular kind:
+成员函数&lt;<ref_value_kind,`value::kind`>&gt;可用于查询值中存储的种类。或者，也可以使用诸如&lt;<ref_value_is_object,`value::is_object`>&gt;、&lt;<ref_value_is_number,`value::is_number`>&gt;等成员函数来检查值是否为特定种类：</ref_value_is_number,`value::is_number`></ref_value_is_object,`value::is_object`></ref_value_kind,`value::kind`>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_2,indent=0]
 ----
 
-Functions like <<ref_value_if_object,`value::if_object`>> actually return a pointer to the object if the value is an object, otherwise they return null. This allows them to be used both in boolean contexts as above, and in assignments or conditional expressions to capture the value of the pointer:
+诸如&lt;<ref_value_if_object,`value::if_object`>&gt;的函数在值为对象时返回指向该对象的指针，否则返回空指针。这使得它们既可以在如上所述的布尔上下文中使用，也可以在赋值或条件表达式中用于捕获指针的值：</ref_value_if_object,`value::if_object`>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_3,indent=0]
 ----
 
-After a <<ref_value>> is constructed, its kind can change depending on what is assigned to it, or by calling functions such as <<ref_value_emplace_array,`value::emplace_array`>> or <<ref_value_emplace_bool,`value::emplace_bool`>>. If the assignment is successful, in other words it completes without any exceptions then the value is replaced. Otherwise, the value is unchanged. All operations which can fail to modify a value offer the strong exception safety guarantee.
+构造&lt;<ref_value>&gt;后，其种类可根据赋值内容或通过调用&lt;<ref_value_emplace_array,`value::emplace_array`>&gt;、&lt;<ref_value_emplace_bool,`value::emplace_bool`>&gt;等函数而改变。如果赋值成功，即未引发任何异常地完成，则该值将被替换。否则，值保持不变。所有可能修改值失败的操作都提供强异常安全保证。</ref_value_emplace_bool,`value::emplace_bool`></ref_value_emplace_array,`value::emplace_array`></ref_value>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_4,indent=0]
 ----
 
-The following table shows all of the ways to determine and access the contents of a <<ref_value>>:
+下表展示了确定和访问&lt;<ref_value>&gt;内容的所有方法：</ref_value>
 
-.<<ref_value>> Accessors
+.&lt;<ref_value>&gt;访问器</ref_value>
 [%autowidth, cols=8]
 |===
-|Kind
-|Representation
-|Emplacement
-|Kind Test
-|Pointer Access
-|`result` Access
-|Checked Access
-|Unchecked Access
+|种类
+|表示形式
+|置入
+|种类测试
+|指针访问
+|`result`访问
+|受检访问
+|非受检访问
 
-|<<ref_kind,`kind::array`>>
-|<<ref_array>>
-|<<ref_value_emplace_array>>
-|<<ref_value_is_array>>
-|<<ref_value_if_array>>
-|<<ref_value_try_as_array>>
-|<<ref_value_as_array>>
-|<<ref_value_get_array>>
+|&lt;<ref_kind,`kind::array`>&gt;</ref_kind,`kind::array`>
+|&lt;<ref_array>&gt;</ref_array>
+|&lt;<ref_value_emplace_array>&gt;</ref_value_emplace_array>
+|&lt;<ref_value_is_array>&gt;</ref_value_is_array>
+|&lt;<ref_value_if_array>&gt;</ref_value_if_array>
+|&lt;<ref_value_try_as_array>&gt;</ref_value_try_as_array>
+|&lt;<ref_value_as_array>&gt;</ref_value_as_array>
+|&lt;<ref_value_get_array>&gt;</ref_value_get_array>
 
-|<<ref_kind,`kind::object`>>
-|<<ref_object>>
-|<<ref_value_emplace_object>>
-|<<ref_value_is_object>>
-|<<ref_value_if_object>>
-|<<ref_value_try_as_object>>
-|<<ref_value_as_object>>
-|<<ref_value_get_object>>
+|&lt;<ref_kind,`kind::object`>&gt;</ref_kind,`kind::object`>
+|&lt;<ref_object>&gt;</ref_object>
+|&lt;<ref_value_emplace_object>&gt;</ref_value_emplace_object>
+|&lt;<ref_value_is_object>&gt;</ref_value_is_object>
+|&lt;<ref_value_if_object>&gt;</ref_value_if_object>
+|&lt;<ref_value_try_as_object>&gt;</ref_value_try_as_object>
+|&lt;<ref_value_as_object>&gt;</ref_value_as_object>
+|&lt;<ref_value_get_object>&gt;</ref_value_get_object>
 
-|<<ref_kind,`kind::string`>>
-|<<ref_string>>
-|<<ref_value_emplace_string>>
-|<<ref_value_is_string>>
-|<<ref_value_if_string>>
-|<<ref_value_try_as_string>>
-|<<ref_value_as_string>>
-|<<ref_value_get_string>>
+|&lt;<ref_kind,`kind::string`>&gt;</ref_kind,`kind::string`>
+|&lt;<ref_string>&gt;</ref_string>
+|&lt;<ref_value_emplace_string>&gt;</ref_value_emplace_string>
+|&lt;<ref_value_is_string>&gt;</ref_value_is_string>
+|&lt;<ref_value_if_string>&gt;</ref_value_if_string>
+|&lt;<ref_value_try_as_string>&gt;</ref_value_try_as_string>
+|&lt;<ref_value_as_string>&gt;</ref_value_as_string>
+|&lt;<ref_value_get_string>&gt;</ref_value_get_string>
 
-|<<ref_kind,`kind::int64`>>
+|&lt;<ref_kind,`kind::int64`>&gt;</ref_kind,`kind::int64`>
 |https://en.cppreference.com/w/cpp/types/integer[`std::int64_t`]
-|<<ref_value_emplace_int64>>
-|<<ref_value_is_int64>>
-|<<ref_value_if_int64>>
-|<<ref_value_try_as_int64>>
-|<<ref_value_as_int64>>
-|<<ref_value_get_int64>>
+|&lt;<ref_value_emplace_int64>&gt;</ref_value_emplace_int64>
+|&lt;<ref_value_is_int64>&gt;</ref_value_is_int64>
+|&lt;<ref_value_if_int64>&gt;</ref_value_if_int64>
+|&lt;<ref_value_try_as_int64>&gt;</ref_value_try_as_int64>
+|&lt;<ref_value_as_int64>&gt;</ref_value_as_int64>
+|&lt;<ref_value_get_int64>&gt;</ref_value_get_int64>
 
-|<<ref_kind,`kind::uint64`>>
+|&lt;<ref_kind,`kind::uint64`>&gt;</ref_kind,`kind::uint64`>
 |https://en.cppreference.com/w/cpp/types/integer[`std::uint64_t`]
-|<<ref_value_emplace_uint64>>
-|<<ref_value_is_uint64>>
-|<<ref_value_if_uint64>>
-|<<ref_value_try_as_uint64>>
-|<<ref_value_as_uint64>>
-|<<ref_value_get_uint64>>
+|&lt;<ref_value_emplace_uint64>&gt;</ref_value_emplace_uint64>
+|&lt;<ref_value_is_uint64>&gt;</ref_value_is_uint64>
+|&lt;<ref_value_if_uint64>&gt;</ref_value_if_uint64>
+|&lt;<ref_value_try_as_uint64>&gt;</ref_value_try_as_uint64>
+|&lt;<ref_value_as_uint64>&gt;</ref_value_as_uint64>
+|&lt;<ref_value_get_uint64>&gt;</ref_value_get_uint64>
 
-|<<ref_kind,`kind::double_`>>
+|&lt;<ref_kind,`kind::double_`>&gt;</ref_kind,`kind::double_`>
 |https://en.cppreference.com/w/cpp/language/types[`double`]
-|<<ref_value_emplace_double>>
-|<<ref_value_is_double>>
-|<<ref_value_if_double>>
-|<<ref_value_try_as_double>>
-|<<ref_value_as_double>>
-|<<ref_value_get_double>>
+|&lt;<ref_value_emplace_double>&gt;</ref_value_emplace_double>
+|&lt;<ref_value_is_double>&gt;</ref_value_is_double>
+|&lt;<ref_value_if_double>&gt;</ref_value_if_double>
+|&lt;<ref_value_try_as_double>&gt;</ref_value_try_as_double>
+|&lt;<ref_value_as_double>&gt;</ref_value_as_double>
+|&lt;<ref_value_get_double>&gt;</ref_value_get_double>
 
-|<<ref_kind,`kind::bool_`>>
+|&lt;<ref_kind,`kind::bool_`>&gt;</ref_kind,`kind::bool_`>
 |https://en.cppreference.com/w/cpp/language/types[`bool`]
-|<<ref_value_emplace_bool>>
-|<<ref_value_is_bool>>
-|<<ref_value_if_bool>>
-|<<ref_value_try_as_bool>>
-|<<ref_value_as_bool>>
-|<<ref_value_get_bool>>
+|&lt;<ref_value_emplace_bool>&gt;</ref_value_emplace_bool>
+|&lt;<ref_value_is_bool>&gt;</ref_value_is_bool>
+|&lt;<ref_value_if_bool>&gt;</ref_value_if_bool>
+|&lt;<ref_value_try_as_bool>&gt;</ref_value_try_as_bool>
+|&lt;<ref_value_as_bool>&gt;</ref_value_as_bool>
+|&lt;<ref_value_get_bool>&gt;</ref_value_get_bool>
 
-|<<ref_kind,`kind::null`>>
+|&lt;<ref_kind,`kind::null`>&gt;</ref_kind,`kind::null`>
 |https://en.cppreference.com/w/cpp/language/nullptr[`std::nullptr_t`]
-|<<ref_value_emplace_null>>
-|<<ref_value_is_null>>
-^|&mdash;
-|<<ref_value_try_as_null>>
-^|&mdash;
-^|&mdash;
+|&lt;<ref_value_emplace_null>&gt;</ref_value_emplace_null>
+|&lt;<ref_value_is_null>&gt;</ref_value_is_null>
+^|—
+|&lt;<ref_value_try_as_null>&gt;</ref_value_try_as_null>
+^|—
+^|—
 
 |===
 
-The emplace members of <<ref_value>> return a typed reference to the underlying representation. For example, the call to <<ref_value_emplace_string,`value::emplace_string`>> in the previous example returns a <<ref_string,`string&`>>. This table shows the underlying type for each kind:
+&lt;<ref_value>&gt;的置入成员函数返回对底层表示形式的类型化引用。例如，前例中对&lt;<ref_value_emplace_string,`value::emplace_string`>&gt;的调用返回一个&lt;<ref_string,`string&`>&gt;。此表展示了每种种类对应的底层类型：</ref_string,`string&`></ref_value_emplace_string,`value::emplace_string`></ref_value>
 
 |===
-|Kind|Type|Description
+|种类d|类型e|描述
 
-| <<ref_kind,`kind::object`>>
-| <<ref_object>>
-| An associative array of string keys mapping to <<ref_value>> elements with an
-  interface similar to {std_unordered_map}, that remembers insertion order.
+| &lt;<ref_kind,`kind::object`>&gt;</ref_kind,`kind::object`>
+| &lt;<ref_object>&gt;</ref_object>
+| 一个字符串键到&lt;<ref_value>&gt;元素的关联数组，其接口类似于{std_unordered_map}，并记录插入顺序。</ref_value>
 
-| <<ref_kind,`kind::array`>>
-| <<ref_array>>
-| An ordered list of <<ref_value>> elements with an interface similar to
-  {std_vector}.
+| &lt;<ref_kind,`kind::array`>&gt;</ref_kind,`kind::array`>
+| &lt;<ref_array>&gt;</ref_array>
+| 一个&lt;<ref_value>&gt;元素的有序列表，其接口类似于{std_vector}。</ref_value>
 
-| <<ref_kind,`kind::string`>>
-| <<ref_string>>
-| A https://en.wikipedia.org/wiki/UTF-8[__UTF-8__] encoded
-  https://en.wikipedia.org/wiki/Unicode[Unicode]
-  https://en.wikipedia.org/wiki/String_(computer_science)[string] of characters
-  with an interface similar to {std_string}.
+| &lt;<ref_kind,`kind::string`>&gt;</ref_kind,`kind::string`>
+| &lt;<ref_string>&gt;</ref_string>
+| 一个https://en.wikipedia.org/wiki/UTF-8[__UTF-8__]编码的https://en.wikipedia.org/wiki/Unicode[Unicode]字符https://en.wikipedia.org/wiki/String_(computer_science)[字符串]，其接口类似于{std_string}。
 
-| <<ref_kind,`kind::int64`>>
+| &lt;<ref_kind,`kind::int64`>&gt;</ref_kind,`kind::int64`>
 | `std::int64_t`
-| A 64 bit signed integer.
+| 64位有符号整数。
 
-| <<ref_kind,`kind::uint64`>>
+| &lt;<ref_kind,`kind::uint64`>&gt;</ref_kind,`kind::uint64`>
 | `std::uint64_t`
-| A 64 bit unsigned integer.
+| 64位无符号整数。
 
-| <<ref_kind,`kind::double_`>>
+| &lt;<ref_kind,`kind::double_`>&gt;</ref_kind,`kind::double_`>
 | `double`
-| A `double` holding a floating-point value.
+| 一个`double`，用于保存浮点型值。
 
-| <<ref_kind,`kind::bool_`>>
+| &lt;<ref_kind,`kind::bool_`>&gt;</ref_kind,`kind::bool_`>
 | https://en.cppreference.com/w/cpp/keyword/bool[`bool`]
-| A `bool` holding `true` or `false`.
+| 一个`bool`，用于保存`true`或`false`。
 
-| <<ref_kind,`kind::null`>>
-^| &mdash;
-| A monostate value representing null.
+| &lt;<ref_kind,`kind::null`>&gt;</ref_kind,`kind::null`>
+^| —
+| 一个表示空值的monostate值。
 |===
 
-The return value from emplace can be used to perform assignment or to capture a reference to the underlying element for later inspection or modification:
+置入操作的返回值可用于执行赋值，或捕获对底层元素的引用以供后续检查或修改：
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_5,indent=0]
 ----
 
-If the <<ref_kind>> of a <<ref_value>> is known, functions such as <<ref_value_as_bool,`value::as_bool`>> or <<ref_value_as_string,`value::as_string`>> may be used to obtain a reference to the underlying representation without changing the existing value:
+如果已知&lt;<ref_value>&gt;的&lt;<ref_kind>&gt;，则可以使用诸如&lt;<ref_value_as_bool,`value::as_bool`>&gt;或&lt;<ref_value_as_string,`value::as_string`>&gt;等函数来获取对底层表示形式的引用，而无需更改现有值：</ref_value_as_string,`value::as_string`></ref_value_as_bool,`value::as_bool`></ref_kind></ref_value>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_6,indent=0]
 ----
 
-However, as shown above these functions throw an exception if the kind in the <<ref_value>> does not match the kind denoted by the function signature. This can be used as a concise form of validation: access values as if they were the right type, but handle the resulting exception indicating if the schema of the JSON is not valid.
+然而，如上所示，如果&lt;<ref_value>&gt;中的种类与函数签名所表示的种类不匹配，这些函数将抛出异常。这可用作一种简洁的验证方式：像访问正确类型的值一样访问，但处理由此产生的异常以指示JSON模式是否无效。</ref_value>
 
-We can query a value for its underlying representation of a particular kind in a way that does not throw exceptions by requesting a pointer which may be null, instead of a reference. Here we use <<ref_value_if_string,`value::if_string`>> to conditionally perform an assignment without using exceptions:
+我们可以通过请求一个可能为空的指针（而非引用）来查询值中特定种类的底层表示形式，而不会抛出异常。这里我们使用&lt;<ref_value_if_string,`value::if_string`>&gt;来条件执行赋值操作，而无需使用异常：</ref_value_if_string,`value::if_string`>
 
 [source]
 ----
@@ -209,7 +204,7 @@ include::../../../test/snippets.cpp[tag=snippet_value_7,indent=0]
 
 [TIP]
 ====
-If the value's kind is known statically, a reference to the underlying representation may be obtained by dereferencing the pointer without checking. This avoids the code overhead of the possible exception when using, for example <<ref_value_as_string,`value::as_string`>>:
+如果值的种类是静态已知的，则可以通过解引用指针而不检查来获取对底层表示形式的引用。这避免了使用例如&lt;<ref_value_as_string,`value::as_string`>&gt;时可能出现的异常所带来的代码开销：</ref_value_as_string,`value::as_string`>
 
 [source]
 ----
@@ -217,12 +212,12 @@ include::../../../test/snippets.cpp[tag=snippet_value_8,indent=0]
 ----
 ====
 
-Functions returning {ref_result} allow you to use both approaches:
+返回{ref_result}的函数允许您使用两种方法：
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_9,indent=0]
 ----
 
-=== Formatted Output
-When a <<ref_value>> is formatted to a {std_ostream}, the result is serialized JSON as if by calling <<ref_serialize>>.
+=== 格式化输出
+当&lt;<ref_value>&gt;被格式化输出到{std_ostream}时，结果将是序列化的JSON，如同调用了&lt;<ref_serialize>&gt;。</ref_serialize></ref_value>
