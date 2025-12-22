@@ -23,17 +23,17 @@ include::../../../test/doc_background.cpp[tag=doc_background_1,indent=0]
 include::../../../test/doc_background.cpp[tag=doc_background_2,indent=0]
 ----
 
-尽管该机制能够正常工作，但存在一些可用性问题：
+尽管该机制能够正常工作，但仍存在一些可用性问题：
 
 * 容器必须是一个类模板。
 * 在元素类型上参数化分配器的方式显得笨拙。
-* 分配器特征机制，尤其是 POCCA 和 POCMA，复杂且容易出错。
+* 分配器特征机制（尤其是 POCCA 和 POCMA）复杂且容易出错。
 
 使用多种分配器类型的基于分配器的程序会引发更多的函数模板实例化，且通常编译速度更慢，因为类模板的函数定义必须在所有调用点可见。
 
 == 多态分配器
 
-{cpp}17通过使用名为{ref_memory_resource}的抽象接口表示低级分配操作，改进了分配器模型。该接口未在元素类型上参数化，且无特征：
+{cpp}17通过引入一个名为 {ref_memory_resource} 的抽象接口来表示底层分配操作，从而改进分配器模型。该接口未在元素类型上参数化，且无特征：
 
 [source]
 ----
@@ -47,43 +47,43 @@ include::../../../test/doc_background.cpp[tag=doc_background_3,indent=0]
 include::../../../test/doc_background.cpp[tag=doc_background_4,indent=0]
 ----
 
-多态分配器通过指向内存资源的指针构造：
+多态分配器通过一个指向内存资源的指针进行构造：
 
 [source]
 ----
 include::../../../test/doc_background.cpp[tag=doc_background_5,indent=0]
 ----
 
-内存资源通过指针传递；所有权不发生转移。调用方需负责延长内存资源的生命周期，直到最后一个使用它的容器超出作用域，否则行为未定义。有时这是正确的模型，例如在此使用本地栈缓冲区构建的单调资源示例中：
+内存资源通过指针传递；所有权不发生转移。调用方需负责确保该内存资源的生命周期持续到所有使用它的容器都离开作用域为止，否则行为未定义。在某些场景下，这种模型是合适的，例如以下示例中使用了一个基于局部栈缓冲区构造的单调内存资源：
 
 [source]
 ----
 include::../../../test/doc_background.cpp[tag=doc_background_6,indent=0]
 ----
 
-然而，有时需要共享所有权。具体而言，内存资源的生命周期延长应是自动的。例如，若某库希望返回一个容器，该容器拥有该库自定义内存资源的实例，如下所示：
+然而，有时需要共享所有权，即内存资源的生命周期应自动延长。例如，若某个库希望返回一个容器，该容器拥有该库自定义内存资源的实例，如下所示：
 
 [source]
 ----
 include::../../../test/doc_background.cpp[tag=doc_background_7,indent=0]
 ----
 
-可通过声明容器使用自定义分配器（可能使用`std::shared_ptr`作为数据成员）来解决此问题。这阻碍了库的组合；每个库现在都导出独特且不兼容的容器类型。原始内存资源指针也容易被误用：
+可通过声明容器使用自定义分配器（可能使用`std::shared_ptr&lt; std::pmr::memory_resource &gt;`作为数据成员）来解决此问题。这会阻碍库的组合；每个库都会导出各自独特且互不兼容的容器类型。原始内存资源指针也容易被误用：
 
 [source]
 ----
 include::../../../test/doc_background.cpp[tag=doc_background_8,indent=0]
 ----
 
-此问题的变通方案比问题本身更糟糕。库可返回一个包含vector和`std::unique_ptr<std::pmr::memory_resource>`的pair，调用方必须自行管理。或者库可更改其函数签名以接受调用方提供的{ref_memory_resource}``*``，同时库还需公开所需的内存资源（如上文的`my_resource`）。</std::pmr::memory_resource>
+针对此问题的变通方案往往比问题本身更糟糕。该库可以返回一个包含 vector 和`std::unique_ptr<std::pmr::memory_resource>`的pair，必须由调用方自行管理。或者，该库也可以修改其函数签名，接受调用方提供的{ref_memory_resource}``*``，同时将所需的内存资源（如上文的`my_resource`）公开。</std::pmr::memory_resource>
 
 == 问题陈述
 
-我们希望使用单一类型`T`的分配器模型，该模型具有以下属性：
+我们希望采用一种使用单一类型`T`的分配器模型，该模型具有以下特性：
 
 * `T`不是类模板
-* `T`引用{ref_memory_resource}
-* `T`支持引用语义或共享所有权
-* `T`与已使用`std::pmr`的代码互操作
+* `T`引用一个 {ref_memory_resource}
+* `T`同时支持引用语义和共享所有权
+* `T`能与已使用`std::pmr`的代码互操作
 
-Boost.JSON通过引入名为&lt;<ref_storage_ptr>&gt;的新型智能指针解决此问题，该指针基于{cpp}17的内存分配接口构建，实现了上述目标。因此，使用此类型的库更易于组合，并享有更快的编译速度，因为使用该类型的容器成员函数可被定义在外部。</ref_storage_ptr>
+Boost.JSON通过引入一个名为&lt;<ref_storage_ptr>&gt;的新型智能指针解决此问题，该指针基于{cpp}17的内存分配接口构建，实现了上述目标。因此，使用该类型的库更易于组合，并能获得更快的编译速度，因为使用该类型的容器的成员函数可以定义在类外（out-of-line）。</ref_storage_ptr>
