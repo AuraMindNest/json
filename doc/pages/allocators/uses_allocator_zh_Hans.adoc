@@ -10,16 +10,16 @@ Official repository: https://github.com/boostorg/json
 
 [#uses_allocator]
 = 使用分配器构造
-为支持已使用多态分配器的代码库，本库中的容器支持{std_uses_allocator}构造。对于&lt;<ref_array>&gt;、&lt;<ref_object>&gt;、&lt;<ref_string>&gt;和&lt;<ref_value>&gt;：</ref_value></ref_string></ref_object></ref_array>
+为支持已使用多态分配器的代码库，本库中的容器支持 {std_uses_allocator} 构造。对于 &lt;<ref_array>&gt;、&lt;<ref_object>&gt;、&lt;<ref_string>&gt; 和 &lt;<ref_value>&gt;：</ref_value></ref_string></ref_object></ref_array>
 
 * 嵌套类型 `allocator_type` 是{ref_polymorphic_allocator}的别名。
 
-* 所有接受&lt;<ref_storage_ptr>&gt;的合格构造函数，在相同参数位置也会接受一个{ref_polymorphic_allocator}的实例。</ref_storage_ptr>
+* 所有接受 &lt;<ref_storage_ptr>&gt; 的合格构造函数，也将在相同参数位置接受一个 {ref_polymorphic_allocator} 实例。</ref_storage_ptr>
 
 * 成员函数 `get_allocator` 返回一个
- {ref_polymorphic_allocator}，该分配器由容器所使用的{ref_memory_resource}构造。此内存资源的所有权不会被转移。
+ 由容器所使用的 {ref_memory_resource} 构造的 {ref_polymorphic_allocator} 实例。该内存资源的所有权不会被转移。
 
-实际上，这意味着当库容器类型用于使用多态分配器的标准容器时，分配器将传播至JSON类型。例如：
+实际上，这意味着当库中的容器类型被用在使用多态分配器的标准容器中时，该分配器会传播到 JSON 类型。例如：
 
 [source]
 ----
