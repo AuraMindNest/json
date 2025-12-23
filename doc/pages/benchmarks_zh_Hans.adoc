@@ -10,14 +10,14 @@ Official repository: https://github.com/boostorg/json
 
 [pagelevels=1,toclevels=1]
 = 基准测试
-本节将 Boost.JSON 与两个广泛使用的具有类似功能的库进行性能比较：以性能著称的 RapidJSON 和以功能丰富著称的现代 C++ JSON 库（nlohmann/json）。bench 程序测量解析和序列化一组代表典型工作负载的 JSON 的吞吐量。评估了以下实现：
+本节将 Boost.JSON 与两个广泛使用的具有类似功能的库进行性能比较：以高性能著称的 RapidJSON 和以功能丰富著称的JSON for Modern C++ 库（nlohmann/json）。bench 程序测量解析和序列化一组代表典型工作负载的 JSON 的吞吐量。评估的实现包括：
 
 .实现
 |===
 |名称e|描述
 
 | *boost(pool)*
-| 使用 &lt;<ref_monotonic_resource>&gt;（一种为解析而优化的资源，无需后续修改）解析输入。&lt;<ref_stream_parser>&gt; 对象在多次测试之间重复使用，使得实现分配的临时内存得以保留，从而提高性能。</ref_stream_parser></ref_monotonic_resource>
+| 使用 &lt;<ref_monotonic_resource>&gt; 解析输入，该资源针对解析后不进行后续修改的场景进行了优化。&lt;<ref_stream_parser>&gt; 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。</ref_stream_parser></ref_monotonic_resource>
 
 | *boost*
 | 使用 &lt;<default_memory_resource,>&gt;（使用标准 C++ 分配器，设计用于通用场景，包括解析后对文档的修改）解析输入。&lt;<ref_stream_parser>&gt; 对象在多次测试之间重复使用，使得实现分配的临时内存得以保留，从而提高性能。</ref_stream_parser></default_memory_resource,>
