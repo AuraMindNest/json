@@ -34,7 +34,7 @@ include::../../../test/snippets.cpp[tag=snippet_objects_1,indent=0]
 include::../../../test/snippets.cpp[tag=snippet_objects_2,indent=0]
 ----
 
-或者，可在构造后插入元素：
+或者，也可以在构造之后插入元素：
 
 [source]
 ----
