@@ -9,14 +9,14 @@ Official repository: https://github.com/boostorg/json
 
 [#nested_access]
 = 访问深层嵌套元素
-为方便检索和修改&lt;<ref_value>&gt;对象的深层嵌套元素，本库实现了https://datatracker.ietf.org/doc/html/rfc6901[RFC 6901 (JSON Pointer)]：</ref_value>
+为了便于便捷地获取和修改 &lt;<ref_value>&gt; 对象中深层嵌套的元素，该库实现了 https://datatracker.ietf.org/doc/html/rfc6901[RFC 6901 (JSON Pointer)]:</ref_value>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_pointer_1,indent=0]
 ----
 
-这在抛出异常不可取时特别有用。例如，比较
+这在不希望抛出异常的场景中尤为有用。例如，对比以下两种方式：
 
 [source]
 ----
@@ -30,14 +30,14 @@ include::../../../test/snippets.cpp[tag=snippet_pointer_2,indent=0]
 include::../../../test/snippets.cpp[tag=snippet_pointer_3,indent=0]
 ----
 
-该库还支持修改和添加深层嵌套元素。函数&lt;<ref_value_set_at_pointer>&gt;的遍历方式与&lt;<ref_value_at_pointer>&gt;类似，但在某些情况下它还能创建缺失的元素：</ref_value_at_pointer></ref_value_set_at_pointer>
+该库还支持修改和添加深层嵌套的元素。函数 &lt;<ref_value_set_at_pointer>&gt; 的遍历方式与 &lt;<ref_value_at_pointer>&gt; 类似，但在某些情况下还能创建缺失的元素：</ref_value_at_pointer></ref_value_set_at_pointer>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_pointer_4,indent=0]
 ----
 
-具体行为由&lt;<ref_set_pointer_options>&gt;类型的可选参数控制。例如，以下是在不同选项下的相同示例：</ref_set_pointer_options>
+具体行为由一个类型为 &lt;<ref_set_pointer_options>&gt; 的可选参数控制。例如，以下是使用不同选项的相同示例：</ref_set_pointer_options>
 
 [source]
 ----
