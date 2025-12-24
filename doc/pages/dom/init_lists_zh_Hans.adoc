@@ -16,21 +16,21 @@ Official repository: https://github.com/boostorg/json
 include::../../../test/snippets.cpp[tag=snippet_init_list_1,indent=0]
 ----
 
-简单的初始化列表会生成一个&lt;<ref_array>&gt;：</ref_array>
+简单的初始化列表会生成一个 &lt;<ref_array>&gt;：</ref_array>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_init_list_2,indent=0]
 ----
 
-初始化列表可以嵌套。这里我们构造一个数组作为数组的元素：
+初始化列表可以嵌套。以下示例中，我们构造了一个以数组作为元素的数组：
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_init_list_3,indent=0]
 ----
 
-当一个包含两个元素的初始化列表嵌套在一个封闭的初始化列表中时，它代表的是&lt;<ref_array>&gt;还是&lt;<ref_object>&gt;是不明确的：</ref_object></ref_array>
+当一个包含两个元素的初始化列表嵌套在外部初始化列表中时，尚不明确它表示的是一个 &lt;<ref_array>&gt; 还是一个 &lt;<ref_object>&gt;：</ref_object></ref_array>
 
 [source]
 ----
