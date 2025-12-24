@@ -109,7 +109,7 @@ a| 结果为一个数值，等于输入值且类型为：
 include::../../../test/snippets.cpp[tag=snippet_conv_recursive,indent=0]
 ----
 
-此处，映射被转换为 &lt;<ref_object>&gt;，因为它匹配 &lt;<ref_is_map_like>&gt;。其每个键被转换为 &lt;<ref_string>&gt;，因为 `std::string` 匹配 &lt;<ref_is_string_like>&gt;；每个值被转换为 &lt;<ref_array>&gt;，因为 `std::pair` 匹配 &lt;<ref_is_tuple_like>&gt;。最后，对中的元素被转换为 `std::int64_t` 数值和 `bool` 值。</ref_is_tuple_like></ref_array></ref_is_string_like></ref_string></ref_is_map_like></ref_object>
+此处，该映射被转换为一个 &lt;<ref_object>&gt;，因为它匹配 &lt;<ref_is_map_like>&gt;。其每个键被转换为一个 &lt;<ref_string>&gt;（因为 `std::string` 匹配 &lt;<ref_is_string_like>&gt;），而每个值被转换为一个 &lt;<ref_array>&gt;（因为 `std::pair` 匹配 &lt;<ref_is_tuple_like>&gt;）。最后，每对元素分别被转换为一个 `std::int64_t` 类型的数值和一个 `bool` 值。</ref_is_tuple_like></ref_array></ref_is_string_like></ref_string></ref_is_map_like></ref_object>
 
 :leveloffset: +1
 
