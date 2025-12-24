@@ -8,10 +8,10 @@ Official repository: https://github.com/boostorg/json
 ////
 
 = 自定义转换
-Boost.JSON使用两种机制来自定义&lt;<ref_value>&gt;与用户类型之间的转换。一种机制涉及特化类型特征。另一种机制更强大，需要定义`tag_invoke`的重载。本节将进一步解释这两种机制。</ref_value>
+Boost.JSON 提供了两种机制用于自定义 &lt;<ref_value>&gt; 与用户类型之间的转换。一种机制涉及特化类型特征（type traits）。另一种机制更强大，需要定义`tag_invoke`的重载。本节将进一步解释这两种机制。</ref_value>
 
 == 转换特征
-之前已经介绍了一些转换类型特征，例如&lt;<ref_is_tuple_like>&gt;或&lt;<ref_is_sequence_like>&gt;。库会依次尝试这些特征，并使用与第一个匹配特征对应的实现。但在某些情况下，一个类型可能匹配优先级较高的特征，但用户希望它属于优先级较低的类别。如果发生这种情况，用户可以特化该类型不应匹配的特征，使其等同于`std::false_type`。</ref_is_sequence_like></ref_is_tuple_like>
+之前已经介绍了一些转换类型特征，例如&lt;<ref_is_tuple_like>&gt; 或 &lt;<ref_is_sequence_like>&gt;。库会依次尝试这些特征，并使用与第一个匹配特征对应的实现。然而，在某些情况下，某个类型可能会匹配到优先级更高的特征，而用户实际希望将其归入优先级更低的类别。如果发生这种情况，用户可以针对该类型特化那个不应匹配的特征，使其等同于`std::false_type`。</ref_is_sequence_like></ref_is_tuple_like>
 
 考虑以下类型：
 
@@ -20,7 +20,7 @@ Boost.JSON使用两种机制来自定义&lt;<ref_value>&gt;与用户类型之间
 include::../../../test/doc_types.hpp[tag=snippet_conv_spec_trait1,indent=0]
 ----
 
-它同时暴露了序列API和元组API。但从&lt;<ref_value>&gt;转换为`user_ns::ip_address`时无法使用序列的实现，因为序列的实现是构造为空然后逐个填充元素，而`ip_address`具有固定大小4。然而，元组转换是合适的。唯一的问题是&lt;<ref_is_tuple_like>&gt;的优先级低于&lt;<ref_is_sequence_like>&gt;。为了规避此问题，用户只需特化&lt;<ref_is_sequence_like>&gt;使其不匹配`ip_address`。</ref_is_sequence_like></ref_is_sequence_like></ref_is_tuple_like></ref_value>
+它同时暴露了序列（sequence）API 和元组（tuple）API。然而，从 &lt;<ref_value>&gt; 转换到 user_ns::ip_address 时无法使用序列的实现，因为序列类型的转换会先构造一个空对象，再逐个填充元素，而 ip_address 的大小固定为 4。相比之下，元组转换是合适的。唯一的问题在于 &lt;<ref_is_tuple_like>&gt; 的优先级低于 &lt;<ref_is_sequence_like>&gt;。为绕过此问题，用户只需特化 &lt;<ref_is_sequence_like>&gt;，使其对 ip_address 不匹配即可。</ref_is_sequence_like></ref_is_sequence_like></ref_is_tuple_like></ref_value>
 
 [source]
 ----
@@ -28,15 +28,15 @@ include::../../../test/snippets.cpp[tag=snippet_conv_spec_trait2,indent=0]
 ----
 
 == `tag_invoke`重载
-第二种更强大的方法是自行提供转换实现。在Boost.JSON中，这通过定义`tag_invoke`函数的重载来实现（该机制的优点在http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1895r0.pdf[C++提案P1895]中概述）。本质上，`tag_invoke`通过使用参数依赖查找从调用点查找可行的重载，为定义定制点提供了统一的接口。顾名思义，标签类型作为参数传递，以便：
+第二种、更强大的方法是自行提供转换实现。在 Boost.JSON 中，这是通过定义`tag_invoke`函数的重载来实现的（该机制的优点详见 http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2019/p1895r0.pdf[C++提案P1895]）。本质上，`tag_invoke` 通过参数依赖查找（ADL）在调用点寻找可用的重载，从而为自定义扩展点提供统一接口。顾名思义，一个标签类型作为参数传递，用于：
 
-* 1. 丢弃与该特定定制点无关的候选函数，并且
+* 1. 排除与该特定自定义点无关的候选函数，并且
 
-* 2. 将用户定义的类型嵌入到参数列表中（例如，通过使用标签类型模板如`value_to_tag<t>`），以便在执行名称查找时检查其http://eel.is/c++draft/basic.lookup.argdep#2[关联的命名空间和实体]。</t>
+* 2. 将用户定义的类型嵌入到参数列表中（例如，通过使用像`value_to_tag<t>`这样的标签类型模板），以便在执行名称查找时检查其http://eel.is/c++draft/basic.lookup.argdep#2[关联的命名空间和实体]。</t>
 
 这样做的效果是能够找到用户提供的`tag_invoke`重载，即使它们在调用函数定义之后（在词法上）声明。
 
-由&lt;<ref_value_from>&gt;调用的`tag_invoke`重载采用以下形式：</ref_value_from>
+由 &lt;<ref_value_from>&gt; 调用的 tag_invoke 重载具有如下形式：</ref_value_from>
 
 ```
 
@@ -59,14 +59,14 @@ T tag_invoke( const value_to_tag&lt; T &gt;&amp;, const value&amp; );
 include::../../../test/snippets.cpp[tag=snippet_tag_invoke_1,indent=0]
 ----
 
-由于被转换的类型嵌入到函数的签名中，用户提供的重载对参数依赖查找可见，并且在执行转换时将成为候选函数：
+由于被转换的类型已嵌入函数签名中，用户提供的重载对参数依赖查找（ADL）可见，并会在执行转换时成为候选函数：
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_tag_invoke_2,indent=0]
 ----
 
-用户可以自由地将具有自定义转换的类型与具有库提供转换的类型组合。库会正确处理它们：
+用户可以自由地将具有自定义转换的类型与具有库提供转换的类型组合使用，库能正确处理它们：
 
 [source]
 ----
