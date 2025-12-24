@@ -14,7 +14,7 @@ Official repository: https://github.com/boostorg/json
 :icon_good: pass:q[[.green]##&#10004##]
 :icon_bad:  pass:q[[.red]##&#10008##]
 
-存在许多C++ JSON库，但为了比较的目的，有三个特别值得注意：https://rapidjson.org/[RapidJSON]、https://nlohmann.github.io/json/[JSON for Modern {cpp}]（本文中称为nlohmann的JSON，或nlohmann）以及https://github.com/lemire/simdjson[SIMD JSON]。
+C++ 中存在众多 JSON 库，但为了比较的目的，有三个在对比中尤为值得关注：https://rapidjson.org/[RapidJSON]、https://nlohmann.github.io/json/[JSON for Modern {cpp}]（本文中称为 nlohmann's JSON， 或简称 nlohmann）以及https://github.com/lemire/simdjson[SIMD JSON]。
 
 == 与nlohmann JSON的比较
 
@@ -42,21 +42,21 @@ private:
 ...
 </basic_json></basic_json></typename,></typename></typename,></typename,>----
 
-该库采用了一种“大而全”的做法。它包含丰富的功能，甚至包括那些小众用途的功能。其弱点在于，尽管许多模板参数允许配置，但它们阻碍了最佳优化。其后果是库的性能较差。配置值类型每个方面的能力产生了自相矛盾的效果，使其不太适合作为通用类型。
+该库采用了一种“大而全”（kitchen sink）的设计理念，包含大量功能，甚至涵盖一些使用场景非常小众的特性。其弱点在于：尽管众多模板参数提供了高度可配置性，却阻碍了编译器实现最优的性能优化。其结果是性能表现较差。这种对值类型各方面均可配置的能力，反而使其作为通用类型的适用性降低，形成了一种悖论效应。
 
-* {icon_bad} `basic_json` 是一个类模板。库必须在模板参数的选择上达成一致才能互操作。
+* {icon_bad} `basic_json` 是一个类模板。各库必须在模板参数的选择上达成一致，才能实现互操作。
 
-* {icon_bad} 过度定制化。我们很难想象将 `BooleanType` 设置为 `bool` 之外的类型有何用例。
+* {icon_bad} 过度定制化。我们很难想象将 `BooleanType` 设置为 `bool` 之外的其他类型的使用场景。
 
-* {icon_bad} 关注点分离不佳。`basic_json` 容器声明不必要地将解析和序列化API混为一谈。
+* {icon_bad} 关注点分离不佳。`basic_json` 容器声明不必要地将解析和序列化API混杂在一起。
 
 * {icon_bad} 分配器支持有限。只允许无状态分配器，这排除了最重要的一类分配器，即基于本地内存池的实现。
 
 * {icon_bad} 没有增量式解析，也没有增量式序列化。
 
-* {icon_bad} 解析和序列化性能差。
+* {icon_bad} 解析和序列化性能较差。
 
-* {icon_good} 功能齐全，包括JSON Pointer、CBOR等。
+* {icon_good} 功能全面，包含 JSON Pointer、CBOR 等特性。
 
 == 与RapidJSON的比较
 
@@ -74,13 +74,13 @@ template <bool const,="" typename="" valuet="">
 class GenericObject;
 </bool>----
 
-* {icon_bad} 值类型不是规整的。赋值具有破坏性，执行 `a = b` 等同于 `a = std::move(b)`。不允许拷贝构造和拷贝赋值。
+* {icon_bad} 值类型不满足“正规性”要求。赋值具有破坏性，执行 `a = b` 等同于 `a = std::move(b)`，且不允许拷贝构造和拷贝赋值。
 
-* {icon_bad} 对象类型没有哈希表或索引来降低查找成本。
+* {icon_bad} 对象类型没有哈希表或索引用于降低查找成本。
 
-* {icon_bad} 分配器具有引用语义。很容易遇到生命周期问题。
+* {icon_bad} 分配器采用引用语义，容易引发生命周期问题。
 
-* {icon_bad} 数组和对象类型的接口与标准库中的对应类型大不相同，且不符合惯用法。
+* {icon_bad} 数组和对象类型的接口与标准库中的对应类型差异显著，且不符合惯用法。
 
 * {icon_bad} 没有增量式解析，也没有增量式序列化。
 
@@ -93,10 +93,10 @@ class GenericObject;
 class ParsedJson;
 ----
 
-这是一个非常有趣的数据结构，它经过优化以与SIMD解析器良好配合。它为目标用例做出了非常好的设计选择。然而，由于必要的限制，它不太适合作为通用类型。
+这是一种相当有趣的数据结构，专为与 SIMD 解析器协同工作而优化。它在目标使用场景下做出了非常优秀的设计选择。然而，由于其必要的限制，它不太适合作为通用类型。
 
 * {icon_bad} 仅支持通过 `ParsedJson::BasicIterator` 进行顺序访问
 
-* {icon_bad} 只读，只能由提供的SIMD JSON解析器填充。
+* {icon_bad} 为只读类型，仅能通过所提供的 SIMD JSON 解析器进行填充。
 
-* {icon_good} 目前最快的JSON解析器。
+* {icon_good} 为目前最快的JSON解析器。
