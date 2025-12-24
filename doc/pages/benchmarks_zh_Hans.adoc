@@ -23,19 +23,19 @@ Official repository: https://github.com/boostorg/json
 | 使用 &lt;<default_memory_resource,>&gt; 解析输入，该资源基于标准 C++ 分配器，适用于通用场景，包括在解析后对文档进行修改。&lt;<ref_stream_parser>&gt; 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。</ref_stream_parser></default_memory_resource,>
 
 | *rapidjson(pool)*
-| 使用 https://rapidjson.org/classrapidjson_1_1_memory_pool_allocator.html[`MemoryPoolAllocator`] 的实例解析输入，该分配器为解析而优化，无需后续修改。保存临时内存的 https://rapidjson.org/classrapidjson_1_1_generic_document.html[`Document`] 对象在多次测试之间不重复使用，否则内存消耗将无限增长并使基准测试无效。
+| 使用 https://rapidjson.org/classrapidjson_1_1_memory_pool_allocator.html[`MemoryPoolAllocator`] 的实例解析输入，该分配器针对“仅解析、不修改”的场景进行了优化。持有临时内存的 https://rapidjson.org/classrapidjson_1_1_generic_document.html[`Document`] 对象在多次测试之间不重复使用，否则内存消耗将无限增长，从而导致基准测试结果无效。
 
 | *rapidjson*
-| 使用 https://rapidjson.org/classrapidjson_1_1_crt_allocator.html[`CrtAllocator`] 的实例解析输入，该分配器使用标准 C++ 分配器，设计用于通用场景，包括解析后对文档的修改。保存临时内存的 https://rapidjson.org/classrapidjson_1_1_generic_document.html[`Document`] 对象在多次测试之间不重复使用，否则内存消耗将无限增长并使基准测试无效。
+| 使用 https://rapidjson.org/classrapidjson_1_1_crt_allocator.html[`CrtAllocator`] 的实例解析输入，该分配器使用标准 C++ 分配器，适用于通用场景，包括解析后对文档的修改。持有临时内存的 https://rapidjson.org/classrapidjson_1_1_generic_document.html[`Document`] 对象在多次测试之间不重复使用，否则内存消耗将无限增长，导致基准测试结果无效。
 
 | *nlohmann*
-| 使用静态成员函数 https://nlohmann.github.io/json/classnlohmann_1_1basic__json_ab330c13ba254ea41fbc1c52c5c610f45.html[`json::parse`] 解析输入，该函数使用默认的 `std` 分配器，设计用于通用场景，包括解析后对文档的修改。该库未提供接口以在后续操作中重复使用解析或序列化期间使用的临时存储。
+| 使用静态成员函数 https://nlohmann.github.io/json/classnlohmann_1_1basic__json_ab330c13ba254ea41fbc1c52c5c610f45.html[`json::parse`] 解析输入，该函数使用默认的 `std` 分配器，适用于通用场景，包括解析后对文档的修改。该库未提供复用解析或序列化过程中所用临时存储的接口，因此无法在后续操作中重用这些临时内存。
 |===
 
-== 方法
-首先加载所有输入文件。然后，每个配置运行足够多的测试次数，以确保至少持续 5 秒。每次测试的耗时、调用次数（解析或序列化）以及传输的字节数作为样本记录，并计算以兆字节每秒表示的吞吐量。每个配置生成多个样本（当前为五个）。除中间两个样本外，其余样本均被丢弃，剩余样本取平均值后作为基准测试结果报告。
+== 方法论
+首先加载所有输入文件。随后，每种配置会运行足够多的试验次数，以确保总运行时间不少于 5 秒。每次试验会记录所用时间、调用次数（解析或序列化）以及传输的字节数，并以此生成一个样本，同时计算出以 MB/s（兆字节每秒）为单位的吞吐量。每种配置会生成多个样本（目前为五个），剔除其中非中间两个的样本后，对剩余的两个样本取平均值，作为该配置的最终基准测试结果。
 
-输入文件位于 bench/data 目录中，其内容如下：
+输入文件位于 bench/data 目录，按如下方式布局：
 
 .输入文件
 |===
@@ -47,19 +47,19 @@ Official repository: https://github.com/boostorg/json
 
 | &lt;<parse_canada_json,*canada.json*>&gt;</parse_canada_json,*canada.json*>
 | 2.2MB
-| 最大的文件，包含大量由浮点数坐标对组成的二元数组。
+| 最大的文件，包含大量由两个浮点数坐标对组成的二元数组。
 
 | &lt;<parse_citm_catalog_json,*citm_catalog.json*>&gt;</parse_citm_catalog_json,*citm_catalog.json*>
 | 1.69MB
-| 一个包含多种嵌套、类型和长度的大型 JSON。
+| 一个包含多种嵌套结构、数据类型和长度的大型 JSON。
 
 | &lt;<parse_github_events_json,*github_events.json*>&gt;</parse_github_events_json,*github_events.json*>
 | 64KB
-| 来自 Github Events API 的数据导出。
+| 一份来自 GitHub Events API 的数据导出。
 
 | &lt;<parse_gsoc_2018_json,*gsoc-2018.json*>&gt;</parse_gsoc_2018_json,*gsoc-2018.json*>
 | 3.25MB
-| Google Summer of Code 2018 数据。
+| Google Summer of Code 2018 data.
 
 | &lt;<parse_instruments_json,*instruments.json*>&gt;</parse_instruments_json,*instruments.json*>
 | 216KB
@@ -67,11 +67,11 @@ Official repository: https://github.com/boostorg/json
 
 | &lt;<parse_marine_ik_json,*marine_ik.json*>&gt;</parse_marine_ik_json,*marine_ik.json*>
 | 2.91MB
-| 一个序列化为 JSON 的 three.js 示例模型。
+| 一个以 JSON 格式序列化的 three.js 示例模型。
 
 | &lt;<parse_mesh_json,*mesh.json*>&gt;</parse_mesh_json,*mesh.json*>
 | 707KB
-| 表示 3D 网格的 JSON。包含许多浮点数。
+| 一个表示三维网格的 JSON，包含大量浮点数。
 
 | &lt;<parse_mesh_pretty_json,*mesh.pretty.json*>&gt;</parse_mesh_pretty_json,*mesh.pretty.json*>
 | 1.54MB
@@ -83,11 +83,11 @@ Official repository: https://github.com/boostorg/json
 
 | &lt;<parse_random_json,*random.json*>&gt;</parse_random_json,*random.json*>
 | 499KB
-| 一个包含大量西里尔字符的 JSON。
+| 一个包含大量 Cyrillic（西里尔）字符的 JSON。
 
 | &lt;<parse_twitter_json,*twitter.json*>&gt;</parse_twitter_json,*twitter.json*>
 | 617KB
-| 来自 Twitter API 的数据导出。
+| 一份来自 Twitter API 的数据导出。
 
 | &lt;<parse_twitterescaped_json,*twitterescaped.json*>&gt;</parse_twitterescaped_json,*twitterescaped.json*>
 | 550KB
@@ -95,12 +95,12 @@ Official repository: https://github.com/boostorg/json
 
 | &lt;<parse_update_center_json,*update-center.json*>&gt;</parse_update_center_json,*update-center.json*>
 | 521KB
-| 来自 Twitter API 的数据导出。
+| 一份来自 Twitter API 的数据导出。
 |===
 
-测试使用的硬件：**Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz**，Windows 10，32GB 内存。
+测试所用硬件：**Intel(R) Core(TM) i7-7700K CPU @ 4.20GHz**, Windows 10, 32GB RAM.
 
-编译器及优化选项：gcc 8.1 (-O3)、clang 12.0 (-O3) 和 msvc 19.26 (/O2)。
+编译器及优化选项：gcc 8.1 (-O3), clang 12.0 (-O3), and msvc 19.26 (/O2)
 
 == 解析
 
