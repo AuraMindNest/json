@@ -7,13 +7,13 @@ file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 Official repository: https://github.com/boostorg/json
 ////
 
-= 非抛出转换
-对于不希望抛出异常的情况，Boost.JSON 还提供了 &lt;<ref_value_to>&gt; 的非抛出版本，即函数模板 &lt;<ref_try_value_to>&gt;。它返回 {ref_result}，这是一个特化的变体，要么持有一个值，要么持有一个 {ref_error_code}。</ref_try_value_to></ref_value_to>
+= 不抛异常的转换
+对于不希望抛出异常的场景，Boost.JSON 还提供了 &lt;<ref_value_to>&gt; 的不抛异常版本，即函数模板 &lt;<ref_try_value_to>&gt;。它返回 {ref_result}，这是一个特化的变体类型，要么持有转换得到的值，要么持有 {ref_error_code}。</ref_try_value_to></ref_value_to>
 
 [NOTE]
-对于 &lt;<ref_value_from>&gt; 没有非抛出等效函数。这仅仅是因为我们尚未遇到需要 &lt;<ref_value_from>&gt; 向调用者报告错误的情况。</ref_value_from></ref_value_from>
+对于 &lt;<ref_value_from>&gt; 没有对应的不抛异常版本。这仅仅是因为我们尚未遇到需要 &lt;<ref_value_from>&gt; 向调用者报告错误的情况。</ref_value_from></ref_value_from>
 
-该库为 &lt;<ref_value_to>&gt; 支持的所有类型类别提供了非抛出转换。如果用户希望将其用于自定义类型，则需要提供如下形式的 `tag_invoke` 重载：</ref_value_to>
+该库为 &lt;<ref_value_to>&gt; 所支持的所有类型类别均提供了不抛异常的转换。如果用户希望将其用于自定义类型，则需要提供如下形式的 `tag_invoke` 重载：</ref_value_to>
 
 ```
 
@@ -21,7 +21,7 @@ result_for<t, value="">::type tag_invoke( const try_value_to_tag&lt; T &gt;&amp;
 
 ```</t,>
 
-对于 &lt;<custom_conversions>&gt; 一节中的类 `ip_address`，此重载可能如下所示：</custom_conversions>
+对于 &lt;<custom_conversions>&gt; 节中所述的 `ip_address` 类，该重载可能如下所示：</custom_conversions>
 
 [source]
 ----
@@ -35,6 +35,6 @@ include::../../../test/snippets.cpp[tag=snippet_nothrow_1,indent=0]
 include::../../../test/snippets.cpp[tag=snippet_nothrow_2,indent=0]
 ----
 
-如果对某个类型使用 &lt;<ref_try_value_to>&gt;，但该类型没有本节所述形式的 `tag_invoke` 重载，而存在用于 &lt;<ref_value_to>&gt; 的形式的重载，则库仍会尝试执行转换。它会使用抛出重载，并尝试将抛出的任何异常转换为 {ref_error_code}。但请注意，这种方法可能比专用重载更慢。</ref_value_to></ref_try_value_to>
+如果对某个类型使用 &lt;<ref_try_value_to>&gt;，而该类型没有本节所述形式的 `tag_invoke` 重载，但存在适用于 &lt;<ref_value_to>&gt; 的重载，那么库仍会尝试执行转换：它会调用抛异常的重载，并试图将抛出的任何异常转换为 {ref_error_code}。但请注意，这种方式的性能很可能不如专门提供的不抛异常重载。</ref_value_to></ref_try_value_to>
 
-反之亦然：如果存在用于 &lt;<ref_try_value_to>&gt; 的 `tag_invoke` 重载，但没有用于 &lt;<ref_value_to>&gt; 的重载，则调用 &lt;<ref_value_to>&gt; 将调用非抛出重载，然后从 {ref_error_code} 构造一个 {ref_system_error} 并抛出。由于这些回退机制，建议用户提供本节中的重载，而非另一种重载，如果他们打算使用 &lt;<ref_try_value_to>&gt;。</ref_try_value_to></ref_value_to></ref_value_to></ref_try_value_to>
+反之亦然：如果存在适用于 &lt;<ref_try_value_to>&gt; 的 tag_invoke 重载，但没有适用于 &lt;<ref_value_to>&gt; 的重载，那么调用 &lt;<ref_value_to>&gt; 时会转而调用不抛异常的重载，随后根据返回的 {ref_error_code} 构造一个 {ref_system_error} 并抛出。由于存在上述回退机制，建议用户在计划使用 &lt;<ref_try_value_to>&gt; 时，优先提供本节所述的不抛异常重载，而非抛异常的重载。</ref_try_value_to></ref_value_to></ref_value_to></ref_try_value_to>
