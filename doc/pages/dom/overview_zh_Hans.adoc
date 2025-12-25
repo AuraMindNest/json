@@ -15,13 +15,13 @@ Official repository: https://github.com/boostorg/json
 .容器类型
 [%autowidth]
 |===
-|类型e|描述
+|Type|描述
 
 | &lt;<ref_array>&gt;</ref_array>
 | 一种支持动态大小和快速随机访问的 JSON 值序列容器。其接口和性能特性类似于 {std_vector}。
 
 | &lt;<ref_object>&gt;</ref_object>
-| 一种具有唯一键的键值对关联容器，其中键为字符串，映射类型为 JSON 值。搜索、插入和移除操作具有平均常数时间复杂度。此外，元素在内存中连续存储，支持缓存友好的迭代。
+| 一种具有唯一键的键值对关联容器，其中键为字符串，映射类型为 JSON 值。查找、插入和移除操作具有平均常数时间复杂度。此外，元素在内存中连续存储，支持缓存友好的迭代。
 
 | &lt;<ref_string>&gt;</ref_string>
 | 一个连续的字符范围。本库假定字符串内容仅包含有效的 UTF-8 编码。
