@@ -144,7 +144,7 @@ include::../../../test/snippets.cpp[tag=snippet_value_4,indent=0]
 &lt;<ref_value>&gt;的置入成员函数返回对底层表示形式的类型化引用。例如，前例中对&lt;<ref_value_emplace_string,`value::emplace_string`>&gt;的调用返回一个&lt;<ref_string,`string&`>&gt;。此表展示了每种种类对应的底层类型：</ref_string,`string&`></ref_value_emplace_string,`value::emplace_string`></ref_value>
 
 |===
-|种类d|类型e|描述
+|种类d|Type|描述
 
 | &lt;<ref_kind,`kind::object`>&gt;</ref_kind,`kind::object`>
 | &lt;<ref_object>&gt;</ref_object>
