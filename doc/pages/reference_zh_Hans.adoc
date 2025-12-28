@@ -14,7 +14,7 @@ Official repository: https://github.com/boostorg/json
 |===
 4+|JSON
 
-a| *类* +
+a| *Classes* +
 &lt;<ref_array>&gt; +
 &lt;<ref_basic_parser>&gt; +
 &lt;<ref_key_value_pair>&gt; +
@@ -33,7 +33,7 @@ a| *类* +
 &lt;<ref_value_ref>&gt; +
 &lt;<ref_value_stack>&gt;</ref_value_stack></ref_value_ref></ref_value></ref_string></ref_stream_parser></ref_storage_ptr></ref_static_resource></ref_set_pointer_options></ref_serialize_options></ref_serializer></ref_parse_options></ref_parser></ref_object></ref_monotonic_resource></ref_key_value_pair></ref_basic_parser></ref_array>
 
-a| *函数* +
+a| *Functions* +
 &lt;<ref_get>&gt; +
 &lt;<ref_get_null_resource>&gt; +
 &lt;<ref_make_shared_resource>&gt; +
@@ -52,7 +52,7 @@ a| *函数* +
 &lt;<ref_pilfered>&gt; +
 &lt;<ref_is_pilfer_constructible>&gt;</ref_is_pilfer_constructible></ref_pilfered></ref_pilfer></ref_visit></ref_value_to></ref_value_from></ref_try_value_to></ref_to_string></ref_serialize></ref_result_from_errno></ref_parse_into></ref_parse></ref_make_shared_resource></ref_get_null_resource></ref_get>
 
-| *运算符* +
+| *Operators* +
 &lt;<ref_operator_eq_eq>&gt; +
 &lt;<ref_operator_not_eq>&gt; +
 &lt;<ref_operator_gt>&gt; +
@@ -61,11 +61,11 @@ a| *函数* +
 &lt;<ref_operator_lt_eq>&gt; +
 &lt;<ref_operator_lt_lt>&gt; +
 
-*别名* +
+*Aliases* +
 &lt;<ref_parser_for>&gt; +
 &lt;<ref_string_view>&gt;
 
-*常量* +
+*Constants* +
 &lt;<ref_array_kind>&gt; +
 &lt;<ref_condition>&gt; +
 &lt;<ref_error>&gt; +
@@ -74,7 +74,7 @@ a| *函数* +
 &lt;<ref_object_kind>&gt; +
 &lt;<ref_string_kind>&gt;</ref_string_kind></ref_object_kind></ref_number_precision></ref_kind></ref_error></ref_condition></ref_array_kind></ref_string_view></ref_parser_for></ref_operator_lt_lt></ref_operator_lt_eq></ref_operator_lt></ref_operator_gt_eq></ref_operator_gt></ref_operator_not_eq></ref_operator_eq_eq>
 
-| *类型特征* +
+| *Type Traits* +
 &lt;<ref_has_value_from>&gt; +
 &lt;<ref_has_value_to>&gt; +
 &lt;<ref_is_deallocate_trivial>&gt; +
