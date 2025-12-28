@@ -14,19 +14,19 @@ Official repository: https://github.com/boostorg/json
 
 .序列化函数和类型
 |===
-|名称e|描述
+|Name|描述
 
 | &lt;<ref_operator_lt_lt>&gt;</ref_operator_lt_lt>
 | 将&lt;<ref_value>&gt;、&lt;<ref_array>&gt;、&lt;<ref_object>&gt;或&lt;<ref_string>&gt;序列化到{std_ostream}。</ref_string></ref_object></ref_array></ref_value>
 
 | &lt;<ref_serialize>&gt;</ref_serialize>
-| 返回一个表示序列化后的&lt;<ref_value>&gt;、&lt;<ref_array>&gt;、&lt;<ref_object>&gt;或&lt;<ref_string>&gt;的{std_string}。</ref_string></ref_object></ref_array></ref_value>
+| 返回一个 {std_string}，表示序列化后的 &lt;<ref_value>&gt;、&lt;<ref_array>&gt;、&lt;<ref_object>&gt; 或 &lt;<ref_string>&gt;。</ref_string></ref_object></ref_array></ref_value>
 
 | &lt;<ref_serializer>&gt;</ref_serializer>
-| 一种有状态对象，可用于高效地序列化一个或多个&lt;<ref_value>&gt;、&lt;<ref_array>&gt;、&lt;<ref_object>&gt;或&lt;<ref_string>&gt;实例。</ref_string></ref_object></ref_array></ref_value>
+| 一个有状态的对象，可用于高效地序列化一个或多个 &lt;<ref_value>&gt;、&lt;<ref_array>&gt;、&lt;<ref_object>&gt; 或 &lt;<ref_string>&gt; 的实例。</ref_string></ref_object></ref_array></ref_value>
 |===
 
-为便于调试和简化输出，库容器类型可使用流操作符写入标准输出流：
+为便于调试和输出，库中的容器类型可通过流操作符写入标准输出流：
 
 [source]
 ----
@@ -40,11 +40,11 @@ include::../../../test/doc_serializing.cpp[tag=doc_serializing_1,indent=0]
 include::../../../test/doc_serializing.cpp[tag=doc_serializing_2,indent=0]
 ----
 
-在整体序列化&lt;<ref_value>&gt;效率低下甚至不可能的情况下，可使用&lt;<ref_serializer>&gt;逐步序列化&lt;<ref_value>&gt;。这样做有多种原因，例如避免缓冲整个输出，或确保每个周期执行固定量的工作。&lt;<ref_serializer>&gt;的实例使用内部动态分配的结构维护输出状态，并提供接口将序列化输出的连续缓冲区检索到调用者提供的缓冲区中。以下示例演示了如何使用&lt;<ref_serializer>&gt;实现&lt;<ref_operator_lt_lt>&gt;：</ref_operator_lt_lt></ref_serializer></ref_serializer></ref_value></ref_serializer></ref_value>
+在整体序列化一个&lt;<ref_value>&gt;效率低下甚至不可行的情况下，可使用&lt;<ref_serializer>&gt;逐步序列化&lt;<ref_value>&gt;。这样做有多种原因，例如避免缓冲整个输出，或确保每个周期执行固定量的工作。&lt;<ref_serializer>&gt;的实例使用内部动态分配的结构维护输出状态，并提供接口，将序列化输出的连续缓冲区检索到调用者提供的缓冲区中。以下示例演示了如何使用&lt;<ref_serializer>&gt;实现&lt;<ref_operator_lt_lt>&gt;：</ref_operator_lt_lt></ref_serializer></ref_serializer></ref_value></ref_serializer></ref_value>
 
 [source]
 ----
 include::../../../include/boost/json/impl/serialize.ipp[tag=example_operator_lt_lt,indent=0]
 ----
 
-与解析器类似，序列化器可通过调用&lt;<ref_serializer_reset>&gt;重复使用。这将设置对象以序列化新实例，并保留先前分配的内存。在序列化多个变量时，这可以提高性能。</ref_serializer_reset>
+与解析器类似，序列化器可通过调用 &lt;<ref_serializer_reset>&gt; 重复使用。这会将对象重置为序列化新实例的状态，并保留先前分配的内存，从而在序列化多个变量时提升性能。</ref_serializer_reset>
