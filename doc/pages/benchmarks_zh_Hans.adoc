@@ -14,7 +14,7 @@ Official repository: https://github.com/boostorg/json
 
 .实现
 |===
-|名称e|描述
+|Name|描述
 
 | *boost(pool)*
 | 使用 &lt;<ref_monotonic_resource>&gt; 解析输入，该资源针对解析后不进行后续修改的场景进行了优化。&lt;<ref_stream_parser>&gt; 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。</ref_stream_parser></ref_monotonic_resource>
@@ -39,7 +39,7 @@ Official repository: https://github.com/boostorg/json
 
 .输入文件
 |===
-|名称e|大小e|描述
+|Name|大小e|描述
 
 | &lt;<parse_apache_builds_json,*apache_builds.json*>&gt;</parse_apache_builds_json,*apache_builds.json*>
 | 125KB
