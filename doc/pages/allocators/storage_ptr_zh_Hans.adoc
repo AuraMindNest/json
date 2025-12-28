@@ -25,7 +25,7 @@ Official repository: https://github.com/boostorg/json
 
 .函数与类型
 |===
-|名称e|描述
+|Name|描述
 
 | &lt;<ref_get_null_resource>&gt;</ref_get_null_resource>
 | 返回一个指向内存资源实例的指针，该实例在分配内存时总是抛出异常。此机制用于确保解析或容器操作不会进行动态内存分配，从而维持该不变性。
