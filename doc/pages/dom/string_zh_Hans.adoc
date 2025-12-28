@@ -12,25 +12,25 @@ Official repository: https://github.com/boostorg/json
 [#dom_string]
 = `string`
 
-可修改的字符序列使用&lt;<ref_string>&gt;类型的对象表示。</ref_string>
+可修改的字符序列通过 &lt;<ref_string>&gt; 类型的对象表示。</ref_string>
 
-&lt;<ref_string>&gt;的接口和功能与{std_string}相同，除了：</ref_string>
+&lt;<ref_string>&gt; 的接口和功能与 {std_string} 相同，但有以下例外：</ref_string>
 
 * &lt;<ref_string>&gt;不是一个类模板，</ref_string>
 * &lt;<ref_string>&gt;使用`char`作为其字符类型，</ref_string>
-* 字符串操作的多余重载已被基于&lt;<ref_string_view>&gt;的接口所替代，</ref_string_view>
+* 字符串操作中冗余的重载已被基于 &lt;<ref_string_view>&gt; 的接口所取代，</ref_string_view>
 * 允许访问`[size(), capacity())`范围内的字符，
-* 使用&lt;<ref_storage_ptr>&gt;代替{req_Allocator}，并且</ref_storage_ptr>
-* 保证小缓冲区优化，避免为小字符串分配内存。
+* 使用&lt;<ref_storage_ptr>&gt;代替{req_Allocator}，且</ref_storage_ptr>
+* 保证采用小缓冲区优化，从而避免为短字符串分配内存。
 
-通过增强的接口，需要输入字符串的操作被实现为带有&lt;<ref_string_view>&gt;类型参数的单一重载，并且可以接受大多数类似字符串的对象。诸如以空字符结尾的字符指针、`std::string`、&lt;<ref_string>&gt;、字符串子范围以及可转换为&lt;<ref_string_view>&gt;的对象都可以传递给这些函数。</ref_string_view></ref_string></ref_string_view>
+通过增强的接口，所有需要输入字符串的操作均以单一重载形式实现，其参数类型为 &lt;<ref_string_view>&gt;，并可接受大多数类字符串对象。诸如以空字符结尾的字符指针、`std::string`、&lt;<ref_string>&gt;、字符串子范围以及可转换为&lt;<ref_string_view>&gt;的对象，均可传递给这些函数。</ref_string_view></ref_string></ref_string_view>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_strings_4,indent=0]
 ----
 
-更正式地说，`std::string`成员函数重载接受以下任意参数组合作为输入字符串：
+更正式地说，`std::string` 中接受以下任一参数组合作为输入字符串的成员函数重载：
 
 * 一个`std::string`参数，或
 * 一个`std::string`参数和两个指定子字符串的`size_type`参数，或
@@ -41,21 +41,21 @@ include::../../../test/snippets.cpp[tag=snippet_strings_4,indent=0]
 
 被一个接受&lt;<ref_string_view>&gt;参数的重载所替代。</ref_string_view>
 
-此设计从接口中移除了多个冗余重载。例如，`std::string::insert`的11个重载在&lt;<ref_string>&gt;中被减少到仅3个，同时仍提供相同的功能。除了这些更改，还移除了接受`std::initializer_list<char>`参数的重载。此类重载用处不大，因为它们只不过是数组的包装器，语法效率低下：</char></ref_string>
+这一设计从接口中移除了多个冗余的重载。例如，`std::string::insert` 原本有 11 个重载，而在 &lt;<ref_string>&gt; 中被减少到仅 3 个，同时仍提供完全相同的功能。除此之外，接受 `std::initializer_list<char>` 参数的重载也被移除。这类重载用途有限，因为它们本质上只是对字符数组的封装，且语法效率低下：</char></ref_string>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_strings_3,indent=0]
 ----
 
-随着为子字符串指定参数的重载被移除，提供了一个返回&lt;<ref_string_view>&gt;的成员函数`subview`，以便于进行廉价的子字符串操作：</ref_string_view>
+随着用于指定子字符串参数的重载被移除，库提供了一个成员函数`subview`， 用于返回一个 &lt;<ref_string_view>&gt;，从而支持高效的子字符串操作：</ref_string_view>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_strings_2,indent=0]
 ----
 
-可以使用&lt;&gt;构造&lt;<ref_string>&gt;而不会产生任何内存分配。或者，也可以显式提供&lt;<ref_storage_ptr>&gt;：</ref_storage_ptr></ref_string>
+&lt;<ref_string>&gt; 可使用 &lt;&gt; 构造，而不会产生任何内存分配。也可以显式提供一个 &lt;<ref_storage_ptr>&gt;：</ref_storage_ptr></ref_string>
 
 [source]
 ----
@@ -64,11 +64,11 @@ include::../../../test/snippets.cpp[tag=snippet_strings_1,indent=0]
 
 == 格式化输出
 
-当&lt;<ref_string>&gt;被格式化到{std_ostream}时，结果是一个有效的JSON。也就是说，结果将被双引号括起来，并且内容会根据JSON规范进行正确转义。</ref_string>
+当&lt;<ref_string>&gt;被格式化到{std_ostream}时，结果是一个有效的JSON。即输出结果将被双引号括起来，并且内容会根据JSON规范进行正确转义。</ref_string>
 
-== 访问超出`size()`的存储
+== 访问超出`size()`范围的存储空间
 
-&lt;<ref_string>&gt;直接支持访问其在`[size(), capacity())`范围内的存储。这可以用于高效地将字符串从多个部分组装起来。字符串组装完成后，使用成员函数&lt;<ref_string_grow>&gt;更新字符串的大小并插入空终止符。例如：</ref_string_grow></ref_string>
+&lt;<ref_string>&gt; 直接支持访问其在`[size(), capacity())`范围内的存储空间。这可用于高效地将字符串从多个部分组装起来。字符串组装完成后，可调用成员函数 &lt;<ref_string_grow>&gt; 来更新字符串的大小并插入空终止符。例如：</ref_string_grow></ref_string>
 
 [source]
 ----
