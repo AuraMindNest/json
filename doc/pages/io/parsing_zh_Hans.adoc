@@ -14,19 +14,19 @@ Official repository: https://github.com/boostorg/json
 
 .解析函数和类型
 |===
-|名称e|描述
+|Name|描述
 
 | &lt;<ref_basic_parser>&gt;</ref_basic_parser>
-| SAX推送解析器的一种实现，它将序列化的JSON文本转换为对用户提供的处理程序的一系列成员函数调用。这允许实现自定义行为以在内存中表示文档。
+| 一个 SAX 推送式解析器实现，它将序列化的 JSON 文本转换为对用户提供的处理器的一系列成员函数调用，从而允许自定义内存中文档的表示行为。
 
 | &lt;<ref_parse_options>&gt;</ref_parse_options>
 | 一种结构，用于选择在解析期间启用哪些扩展。
 
 | &lt;<ref_parse>&gt;</ref_parse>
-| 解析包含完整序列化JSON文本的字符串，并返回一个&lt;<ref_value>&gt;。</ref_value>
+| 解析包含完整序列化 JSON 文本的字符串，并返回一个 &lt;<ref_value>&gt;。</ref_value>
 
 | &lt;<ref_parser>&gt;</ref_parser>
-| 一种有状态的DOM解析器对象，可用于高效解析一系列JSON文本（每个文本都包含在单个连续字符缓冲区中），并将每个结果作为&lt;<ref_value>&gt;返回。</ref_value>
+| 一种有状态的 DOM 解析器对象，可用于高效解析一系列 JSON 文本（每个文本均位于单独的连续字符缓冲区中），并将每个结果作为&lt;<ref_value>&gt;返回。</ref_value>
 
 | &lt;<ref_stream_parser>&gt;</ref_stream_parser>
 | 一种有状态的DOM解析器对象，可用于高效地增量解析一系列JSON文本，并将每个结果作为&lt;<ref_value>&gt;返回。</ref_value>
@@ -49,14 +49,14 @@ include::../../../test/doc_parsing.cpp[tag=doc_parsing_1,indent=0]
 include::../../../test/doc_parsing.cpp[tag=doc_parsing_2,indent=0]
 ----
 
-即使使用错误码，底层{ref_memory_resource}抛出的异常仍可能发生：
+即使使用错误码，底层 {ref_memory_resource} 仍可能抛出异常：
 
 [source]
 ----
 include::../../../test/doc_parsing.cpp[tag=doc_parsing_3,indent=0]
 ----
 
-前面示例中返回的&lt;<ref_value>&gt;使用&lt;&gt;。以下代码使用&lt;<ref_monotonic_resource>&gt;，这会导致更快的解析。`jv`被标记为`const`以防止后续修改，因为使用单调资源的容器在发生变更时会浪费内存。</ref_monotonic_resource></ref_value>
+前述示例中返回的 &lt;<ref_value>&gt; 使用了 &lt;&gt;（默认内存资源）。以下代码使用了 &lt;<ref_monotonic_resource>&gt;，从而实现更快的解析。`jv` 被标记为 `const` 以防止后续修改，因为使用单调内存资源的容器在被修改时会浪费内存。</ref_monotonic_resource></ref_value>
 
 [source]
 ----
@@ -64,38 +64,38 @@ include::../../../test/doc_parsing.cpp[tag=doc_parsing_4,indent=0]
 ----
 
 == 非标准JSON
-除非另有说明，否则此库中的解析器是严格的。它仅识别有效的标准JSON。可以通过填写&lt;<ref_parse_options>&gt;结构并按值传递它来配置解析器以允许某些非标准扩展。默认情况下，所有扩展都被禁用：</ref_parse_options>
+除非另有说明，本库中的解析器采用严格模式，仅识别有效的标准 JSON。通过填充一个 &lt;<ref_parse_options>&gt; 结构并按值传递它来配置解析器，以允许某些非标准扩展。默认情况下，所有扩展都被禁用：</ref_parse_options>
 
 [source]
 ----
 include::../../../test/doc_parsing.cpp[tag=doc_parsing_5,indent=0]
 ----
 
-使用{cpp}20或更高版本构建时，可以将https://en.cppreference.com/w/cpp/language/aggregate_initialization#Designated_initializers[指派初始化器]与&lt;<ref_parse_options>&gt;一起使用：</ref_parse_options>
+当使用 {cpp}20 或更高版本构建时，可以对 &lt;<ref_parse_options>&gt; 使用 https://en.cppreference.com/w/cpp/language/aggregate_initialization#Designated_initializers[指定初始化器]：</ref_parse_options>
 
 [source]
 ----
 include::../../../test/doc_parsing.cpp[tag=doc_parsing_6,indent=0]
 ----
 
-当启用`allow_invalid_utf16`时，解析器在遇到非法的前导、尾随或半个代理项时不会抛出错误。相反，它会将无效的UTF-16代码点替换为Unicode替换字符。
+启用 allow_invalid_utf16 后，解析器在遇到非法的前导代理、尾随代理或半个代理时不会抛出错误，而是将无效的 UTF-16 码点替换为 Unicode 替换字符。
 
 [source]
 ----
 include::../../../test/doc_parsing.cpp[tag=doc_parsing_15,indent=0]
 ----
 
-CAUTION: 启用注释支持时，要特别注意在读取输入时不要丢弃空白字符。例如，`std::getline`会从它生成的字符串中移除行尾字符。
+CAUTION: 启用注释支持时，读取输入时需格外注意不要丢失空白字符。例如，`std::getline`会从它生成的字符串中移除行尾字符。
 
 == 全精度数字解析
-该库用于解析数字的默认算法速度很快，但可能导致轻微的精度损失。这可能不适用于某些应用，因此可以选择启用一种没有此缺陷但速度稍慢的替代算法。为此，您还需要使用&lt;<ref_parse_options>&gt;结构。</ref_parse_options>
+库默认使用的数字解析算法速度较快，但可能导致轻微的精度损失。这在某些应用中可能不可接受，因此可以选择启用一种没有此缺陷但速度稍慢的替代算法。为此，您还需要使用&lt;<ref_parse_options>&gt;结构体。</ref_parse_options>
 
 [source]
 ----
 include::../../../test/doc_parsing.cpp[tag=doc_parsing_precise,indent=0]
 ----
 
-请注意，全精度数字解析要求算法看到完整的数字。这意味着，当与&lt;<ref_stream_parser>&gt;一起使用时，可能需要额外的内存分配来存储解析器迄今为止接受的数字部分。该库确实尽力避免此类分配。</ref_stream_parser>
+请注意，全精度数字解析要求算法看到完整的数字。这意味着，当与&lt;<ref_stream_parser>&gt;一起使用时，可能需要额外的内存分配来存储解析器迄今为止接受的数字部分。该库尽力避免此类分配。</ref_stream_parser>
 
 == 解析器
 &lt;<ref_parser>&gt;和&lt;<ref_stream_parser>&gt;的实例提供超出使用&lt;<ref_parse>&gt;自由函数时的功能：</ref_parse></ref_stream_parser></ref_parser>
