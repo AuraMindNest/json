@@ -22,8 +22,8 @@ Official repository: https://github.com/boostorg/json
 
 [source]
 ----
-#include <boost json="" src.hpp="">
-</boost>----
+#include <boost/json/src.hpp>
+----
 
 [NOTE]
 ====
