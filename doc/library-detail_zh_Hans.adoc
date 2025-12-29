@@ -71,8 +71,8 @@ Boost.JSON 提供以下特性：
 要使用纯头文件模式（即无需将程序链接到静态或动态的 Boost.JSON 库），只需在项目中一个新建或现有源文件中添加以下行。
 
 ....
-#include <boost json="" src.hpp="">
-</boost>....
+#include <boost/json/src.hpp>
+....
 
 MSVC 用户还必须定义宏 `BOOST_JSON_NO_LIB` 以禁用自动链接。
 
@@ -82,8 +82,8 @@ Boost.JSON 在嵌入式设备上表现优异。该库使用局部栈缓冲区来
 
 ....
 #define BOOST_JSON_STACK_BUFFER_SIZE 1024
-#include <boost json="" src.hpp="">
-</boost>....
+#include <boost/json/src.hpp>
+....
 
 ==== 支持的编译器
 
