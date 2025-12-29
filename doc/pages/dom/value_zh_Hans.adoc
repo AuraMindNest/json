@@ -10,7 +10,7 @@ Official repository: https://github.com/boostorg/json
 
 [#dom_value]
 = `value`
-JSON文档在内存中表示为&lt;<ref_value>&gt;的实例：一种{req_Regular}类型，满足{req_DefaultConstructible}、{req_CopyConstructible}、{req_CopyAssignable}、{req_MoveConstructible}、{req_MoveAssignable}以及许多分配器感知容器的要求。它在内部实现为https://en.wikipedia.org/wiki/Tagged_union[__variant__]，并且可以动态存储六种已定义的JSON值类型中的任意一种：</ref_value>
+JSON文档在内存中表示为&lt;<ref_value>&gt;的实例：一种{req_Regular}类型，满足{req_DefaultConstructible}、{req_CopyConstructible}、{req_CopyAssignable}、{req_MoveConstructible}、{req_MoveAssignable}以及许多分配器感知容器的要求。它在内部实现为一个https://en.wikipedia.org/wiki/Tagged_union[__variant__]（变体），并且可以动态存储六种已定义的JSON值类型中的任意一种：</ref_value>
 
 * **空值**：一种https://en.cppreference.com/w/cpp/utility/variant/monostate[__monostate__]值，等同于`nullptr`。
 
@@ -39,21 +39,21 @@ include::../../../test/snippets.cpp[tag=snippet_value_1,indent=0]
 include::../../../test/snippets.cpp[tag=snippet_value_2,indent=0]
 ----
 
-诸如&lt;<ref_value_if_object,`value::if_object`>&gt;的函数在值为对象时返回指向该对象的指针，否则返回空指针。这使得它们既可以在如上所述的布尔上下文中使用，也可以在赋值或条件表达式中用于捕获指针的值：</ref_value_if_object,`value::if_object`>
+诸如&lt;<ref_value_if_object,`value::if_object`>&gt;的函数在值为对象时返回指向该对象的指针，否则返回空指针。这使得它们既可用于上述的布尔上下文，也可用于赋值或条件表达式中，以捕获指针的值：</ref_value_if_object,`value::if_object`>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_3,indent=0]
 ----
 
-构造&lt;<ref_value>&gt;后，其种类可根据赋值内容或通过调用&lt;<ref_value_emplace_array,`value::emplace_array`>&gt;、&lt;<ref_value_emplace_bool,`value::emplace_bool`>&gt;等函数而改变。如果赋值成功，即未引发任何异常地完成，则该值将被替换。否则，值保持不变。所有可能修改值失败的操作都提供强异常安全保证。</ref_value_emplace_bool,`value::emplace_bool`></ref_value_emplace_array,`value::emplace_array`></ref_value>
+&lt;<ref_value>&gt;构造之后，其类型可根据赋值内容或通过调用&lt;<ref_value_emplace_array,`value::emplace_array`>&gt;、&lt;<ref_value_emplace_bool,`value::emplace_bool`>&gt;等函数来改变。如果赋值成功，即未引发任何异常，则该值将被替换。否则，原值保持不变。所有可能修改值失败的操作均提供强异常安全保证。</ref_value_emplace_bool,`value::emplace_bool`></ref_value_emplace_array,`value::emplace_array`></ref_value>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_4,indent=0]
 ----
 
-下表展示了确定和访问&lt;<ref_value>&gt;内容的所有方法：</ref_value>
+下表列出了所有用于判断和访问 &lt;<ref_value>&gt; 内容的方法：</ref_value>
 
 .&lt;<ref_value>&gt;访问器</ref_value>
 [%autowidth, cols=8]
@@ -141,14 +141,14 @@ include::../../../test/snippets.cpp[tag=snippet_value_4,indent=0]
 
 |===
 
-&lt;<ref_value>&gt;的置入成员函数返回对底层表示形式的类型化引用。例如，前例中对&lt;<ref_value_emplace_string,`value::emplace_string`>&gt;的调用返回一个&lt;<ref_string,`string&`>&gt;。此表展示了每种种类对应的底层类型：</ref_string,`string&`></ref_value_emplace_string,`value::emplace_string`></ref_value>
+&lt;&lt;<ref_value>&gt;的置入成员函数返回对底层表示形式的类型化引用。例如，前例中对 &lt;&gt; 的调用返回一个 &lt;&gt;。下表列出了每种 kind 对应的底层类型：</ref_value>
 
 |===
-|种类d|Type|描述
+|Kind|Type|描述
 
 | &lt;<ref_kind,`kind::object`>&gt;</ref_kind,`kind::object`>
 | &lt;<ref_object>&gt;</ref_object>
-| 一个字符串键到&lt;<ref_value>&gt;元素的关联数组，其接口类似于{std_unordered_map}，并记录插入顺序。</ref_value>
+| 一个关联数组，其键为字符串，值为 &lt;<ref_value>&gt; 元素，接口类似于 {std_unordered_map}，并保留插入顺序。</ref_value>
 
 | &lt;<ref_kind,`kind::array`>&gt;</ref_kind,`kind::array`>
 | &lt;<ref_array>&gt;</ref_array>
@@ -156,7 +156,7 @@ include::../../../test/snippets.cpp[tag=snippet_value_4,indent=0]
 
 | &lt;<ref_kind,`kind::string`>&gt;</ref_kind,`kind::string`>
 | &lt;<ref_string>&gt;</ref_string>
-| 一个https://en.wikipedia.org/wiki/UTF-8[__UTF-8__]编码的https://en.wikipedia.org/wiki/Unicode[Unicode]字符https://en.wikipedia.org/wiki/String_(computer_science)[字符串]，其接口类似于{std_string}。
+| 一个采用https://en.wikipedia.org/wiki/UTF-8[__UTF-8__]编码的https://en.wikipedia.org/wiki/Unicode[Unicode]字符https://en.wikipedia.org/wiki/String_(computer_science)[字符串]，其接口类似于{std_string}。
 
 | &lt;<ref_kind,`kind::int64`>&gt;</ref_kind,`kind::int64`>
 | `std::int64_t`
@@ -186,14 +186,14 @@ include::../../../test/snippets.cpp[tag=snippet_value_4,indent=0]
 include::../../../test/snippets.cpp[tag=snippet_value_5,indent=0]
 ----
 
-如果已知&lt;<ref_value>&gt;的&lt;<ref_kind>&gt;，则可以使用诸如&lt;<ref_value_as_bool,`value::as_bool`>&gt;或&lt;<ref_value_as_string,`value::as_string`>&gt;等函数来获取对底层表示形式的引用，而无需更改现有值：</ref_value_as_string,`value::as_string`></ref_value_as_bool,`value::as_bool`></ref_kind></ref_value>
+如果已知 &lt;<ref_value>&gt; 的 &lt;<ref_kind>&gt;，可使用诸如 &lt;&gt; 或 &lt;&gt; 等函数，在不改变现有值的情况下获取对底层表示的引用：</ref_kind></ref_value>
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_6,indent=0]
 ----
 
-然而，如上所示，如果&lt;<ref_value>&gt;中的种类与函数签名所表示的种类不匹配，这些函数将抛出异常。这可用作一种简洁的验证方式：像访问正确类型的值一样访问，但处理由此产生的异常以指示JSON模式是否无效。</ref_value>
+然而，如上所示，如果 &lt;<ref_value>&gt; 中的实际类型与函数签名所指定的类型不匹配，这些函数会抛出异常。这一行为可作为一种简洁的验证形式：以预期类型直接访问值，若 JSON 结构无效，则通过捕获异常进行处理。</ref_value>
 
 我们可以通过请求一个可能为空的指针（而非引用）来查询值中特定种类的底层表示形式，而不会抛出异常。这里我们使用&lt;<ref_value_if_string,`value::if_string`>&gt;来条件执行赋值操作，而无需使用异常：</ref_value_if_string,`value::if_string`>
 
@@ -220,4 +220,4 @@ include::../../../test/snippets.cpp[tag=snippet_value_9,indent=0]
 ----
 
 === 格式化输出
-当&lt;<ref_value>&gt;被格式化输出到{std_ostream}时，结果将是序列化的JSON，如同调用了&lt;<ref_serialize>&gt;。</ref_serialize></ref_value>
+当将 &lt;<ref_value>&gt; 输出到 {std_ostream} 时，其结果等同于调用 &lt;<ref_serialize>&gt; 所生成的序列化 JSON。</ref_serialize></ref_value>
