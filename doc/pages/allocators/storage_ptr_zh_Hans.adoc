@@ -9,17 +9,17 @@ Official repository: https://github.com/boostorg/json
 ////
 
 = `storage_ptr`
-本库中的可变长度容器均使用动态分配的内存来存储其内容。调用方可通过在特定构造函数和函数参数列表中指定 &lt;<ref_storage_ptr>&gt;，以控制所使用的内存分配策略。&lt;<ref_storage_ptr>&gt; 具有以下特性：</ref_storage_ptr></ref_storage_ptr>
+本库中的可变长度容器均使用动态分配的内存来存储其内容。调用方可通过在特定构造函数和函数参数列表中指定 <<ref_storage_ptr>> ，以控制所使用的内存分配策略。<<ref_storage_ptr>> 具有以下特性：
 
 * 存储指针始终指向一个有效的、类型擦除后的 {ref_memory_resource}。
 
-* 默认构造的存储指针引用 &lt;&gt;，这是一个由实现定义的实例，始终使用等效于全局 operator new 和 operator delete 的方式。
+* 默认构造的存储指针引用 <<default_memory_resource,default resource>>（默认资源），这是一个由实现定义的实例，始终使用等效于全局 operator new 和 operator delete 的方式。
 
 * 从 {ref_memory_resource} 或 {ref_polymorphic_allocator} 构造的存储指针不获取所有权；调用方负责确保资源的生命周期持续到不再被引用为止。
 
-* 通过 &lt;<ref_make_shared_resource>&gt; 获取的存储指针会获得对内存资源的共享所有权；该资源的生命周期将延长，直至所有该存储指针的副本均被销毁。</ref_make_shared_resource>
+* 通过 <<ref_make_shared_resource>> 获取的存储指针会获得对内存资源的共享所有权；该资源的生命周期将延长，直至所有该存储指针的副本均被销毁。
 
-* 存储指针在对资源进行类型擦除之前会记录 &lt;<ref_is_deallocate_trivial>&gt; 的值，从而允许在运行时查询该值。</ref_is_deallocate_trivial>
+* 存储指针在对资源进行类型擦除之前会记录 <<ref_is_deallocate_trivial>> 的值，从而允许在运行时查询该值。
 
 以下是使用该库时所有与分配相关的类型和函数列表：
 
@@ -27,33 +27,33 @@ Official repository: https://github.com/boostorg/json
 |===
 |Name|描述
 
-| &lt;<ref_get_null_resource>&gt;</ref_get_null_resource>
+| <<ref_get_null_resource>>
 | 返回一个指向内存资源实例的指针，该实例在分配内存时总是抛出异常。此机制用于确保解析或容器操作不会进行动态内存分配，从而维持该不变性。
 
-| &lt;<ref_is_deallocate_trivial>&gt;</ref_is_deallocate_trivial>
+| <<ref_is_deallocate_trivial>>
 | 一个自定义点，允许内存资源类型表明其 deallocate 调用是平凡的。
 
-| &lt;<ref_make_shared_resource>&gt;</ref_make_shared_resource>
+| <<ref_make_shared_resource>>
 | 一个返回智能指针的函数，该智能指针对新分配的内存资源具有共享所有权。
 
 | {ref_memory_resource}
 | 表示分配器的抽象基类。
 
-| &lt;<ref_monotonic_resource>&gt;</ref_monotonic_resource>
+| <<ref_monotonic_resource>>
 | 一种内存资源，用于分配大块内存，且其 deallocate 函数是平凡的。所分配的内存不会被释放，直到该资源被销毁，因此在解析场景下速度很快，但不适合执行修改操作。
 
 | {ref_polymorphic_allocator}
 | 一个 {req_Allocator}，它通过引用 {ref_memory_resource} 执行内存分配。
 
-| &lt;<ref_static_resource>&gt;</ref_static_resource>
+| <<ref_static_resource>>
 | 一种使用调用方提供的单一缓冲区的内存资源，不进行任何动态分配。该资源在解析时速度很快，但不适合执行修改操作。
 
-| &lt;<ref_storage_ptr>&gt;</ref_storage_ptr>
+| <<ref_storage_ptr>>
 | 一种用于管理和访问 {ref_memory_resource} 的智能指针。
 |===
 
 == 默认内存资源
-默认内存资源使用全局 `operator new` 和 `operator delete` 来进行内存分配。该资源不采用引用计数，且其 deallocate 函数是非平凡的。所有默认构造的 &lt;<ref_storage_ptr>&gt; 对象均引用同一个内存资源：</ref_storage_ptr>
+默认内存资源使用全局 `operator new` 和 `operator delete` 来进行内存分配。该资源不采用引用计数，且其 deallocate 函数是非平凡的。所有默认构造的 <<ref_storage_ptr>> 对象均引用同一个内存资源：
 
 [source]
 ----
@@ -75,9 +75,9 @@ include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_2,indent=0]
 == 单调资源
 考虑解析过程中的内存分配模式：当遇到数组、对象或字符串时，解析器会将其元素累积在临时存储区中。当所有元素都已知后，在构造值时会向内存资源发起一次内存分配请求。因此，解析过程仅在容器最终大小确定时进行一次分配和构造，不会发生内存重分配；也就是说，内存缓冲区无需通过分配更大的新缓冲区并释放旧缓冲区的方式来扩容。
 
-&lt;<ref_monotonic_resource>&gt; 通过在内部分配逐渐增大的全局内存块，并将这些块切分为更小的部分以满足分配请求，从而优化了该内存分配模式。它具有平凡的 deallocate 函数，实际上不会释放内存，直到该资源被销毁。因此，它非常适合用于解析 JSON 后仅检查结果值而不对其进行修改的场景。</ref_monotonic_resource>
+<<ref_monotonic_resource>> 通过在内部分配逐渐增大的全局内存块，并将这些块切分为更小的部分以满足分配请求，从而优化了该内存分配模式。它具有平凡的 deallocate 函数，实际上不会释放内存，直到该资源被销毁。因此，它非常适合用于解析 JSON 后仅检查结果值而不对其进行修改的场景。
 
-在调用 &lt;<ref_parse>&gt; 时，可按如下方式指定构造值所使用的内存资源：</ref_parse>
+在调用 <<ref_parse>> 时，可按如下方式指定构造值所使用的内存资源：
 
 [source]
 ----
@@ -99,7 +99,7 @@ include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_5,indent=0]
 ----
 
 == 静态资源
-&lt;<ref_static_resource>&gt; 由调用方提供的缓冲区构造而成，并从该缓冲区满足所有内存分配请求。一旦缓冲区耗尽，后续的分配调用将抛出 `std::bad_alloc` 异常。该资源提供一个简单的不变式：永不执行动态堆分配。</ref_static_resource>
+<<ref_static_resource>> 由调用方提供的缓冲区构造而成，并从该缓冲区满足所有内存分配请求。一旦缓冲区耗尽，后续的分配调用将抛出 `std::bad_alloc` 异常。该资源提供一个简单的不变式：永不执行动态堆分配。
 
 要使用该资源，请用一个局部缓冲区对其进行构造：
 
@@ -109,10 +109,10 @@ include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_6,indent=0]
 ----
 
 == 空资源
-函数 &lt;<ref_get_null_resource>&gt; 返回一个全局的空资源实例。该资源提供一个简单的不变式：所有内存分配调用都会抛出 `std::bad_alloc` 异常。通过使用空资源实例，可确保解析过程绝不会进行堆内存分配。这一点将在后文进一步详细说明。</ref_get_null_resource>
+函数 <<ref_get_null_resource>> 返回一个全局的空资源实例。该资源提供一个简单的不变式：所有内存分配调用都会抛出 `std::bad_alloc` 异常。通过使用空资源实例，可确保解析过程绝不会进行堆内存分配。这一点将在后文进一步详细说明。
 
 == 分配器传播
-容器 &lt;<ref_array>&gt;、&lt;<ref_object>&gt; 和 &lt;<ref_value>&gt; 在构造时所使用的内存资源会自动传播给其子元素：</ref_value></ref_object></ref_array>
+容器 <<ref_array>>, <<ref_object>> 和 <<ref_value>> 在构造时所使用的内存资源会自动传播给其子元素：
 
 [source]
 ----
@@ -122,7 +122,7 @@ include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_7,indent=0]
 这种传播是递归进行的：嵌套容器中的所有子容器都会获得相同的内存资源。一旦容器被构造，其内存资源就永远无法更改。
 
 == 资源生命周期
-需要注意的是，&lt;<ref_storage_ptr>&gt; 同时支持共享所有权和引用生命周期模型。从内存资源指针构造时不会转移所有权：</ref_storage_ptr>
+需要注意的是，<<ref_storage_ptr>> 同时支持共享所有权和引用生命周期模型。从内存资源指针构造时不会转移所有权：
 
 [source]
 ----
@@ -131,7 +131,7 @@ include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_8,indent=0]
 
 以这种方式使用内存资源时（包括从 {ref_polymorphic_allocator} 构造存储指针或容器的情况），调用方必须确保资源的生命周期延长至不再被任何变量引用为止；否则，可能会出现未定义行为。
 
-通过函数 &lt;<ref_make_shared_resource>&gt; 可实现共享所有权，该函数会动态分配内存以创建一个新的、带引用计数的内存资源，并将其以 &lt;<ref_storage_ptr>&gt; 的形式返回：</ref_storage_ptr></ref_make_shared_resource>
+通过函数 <<ref_make_shared_resource>> 可实现共享所有权，该函数会动态分配内存以创建一个新的、带引用计数的内存资源，并将其以 <<ref_storage_ptr>> 的形式返回：
 
 [source]
 ----
