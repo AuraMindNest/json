@@ -11,9 +11,11 @@ Official repository: https://github.com/boostorg/json
 
 [#conversion]
 = 值转换
-尽管 <<ref_value>> 容器便于创建临时结构，但通常仍需在 JSON 与用户自定义类型或标准库类型之间进行转换。
+尽管 <<ref_value>> 容器便于创建临时结构，
+但通常仍需在 JSON
+与用户自定义类型或标准库类型之间进行转换。
 
-函数模板 <<ref_value_from>> 提供了从类型 `T` 构造 <<ref_value>> 的接口。函数模板 <<ref_value_to>> 则执行相反方向的转换，从类型 `T` 转换为 <<ref_value>>。两者均支持多种不同的 https://en.cppreference.com/w/cpp/language/types[基础类型]（如 `int` 或 `double`）、标准库类型（如 `std::string` 或 `std::vector<t>`），并可扩展以支持用户定义类型。
+函数模板 <<ref_value_from>> 提供了从类型 `T` 构造 <<ref_value>> 的接口。函数模板 <<ref_value_to>> 则执行相反方向的转换，从类型 `T` 转换为 <<ref_value>>。两者均支持多种不同的 https://en.cppreference.com/w/cpp/language/types[基础类型]（如 `int` 或 `double`）、标准库类型（如 `std::string` 或 `std::vector<T>`），并可扩展以支持用户定义类型。
 
 [source]
 ----
@@ -113,12 +115,12 @@ include::../../../test/snippets.cpp[tag=snippet_conv_recursive,indent=0]
 
 :leveloffset: +1
 
-include::custom.adoc[]
-include::nothrow.adoc[]
-include::alloc.adoc[]
-include::context.adoc[]
-include::forward.adoc[]
-include::direct.adoc[]
-include::guidelines.adoc[]
+include::custom_zh_Hans.adoc[]
+include::nothrow_zh_Hans.adoc[]
+include::alloc_zh_Hans.adoc[]
+include::context_zh_Hans.adoc[]
+include::forward_zh_Hans.adoc[]
+include::direct_zh_Hans.adoc[]
+include::guidelines_zh_Hans.adoc[]
 
 :leveloffset: -1

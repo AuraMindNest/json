@@ -57,7 +57,7 @@ using namespace boost::json;
 }
 ----
 
-在本库中，类型 <<ref_array>>、<<ref_object>> 和 <<ref_string>> 分别用于表示 JSON 数组、对象和字符串，而类型 <<ref_value>> 是一种特殊的变体（variant），可容纳任意 JSON 元素。以下示例首先构造一个空对象，然后插入上述元素：
+在本库中，类型 <<ref_array>>,  <<ref_object>> 和 <<ref_string>> 分别用于表示 JSON 数组、对象和字符串，而类型 <<ref_value>> 是一种特殊的变体（variant），可容纳任意 JSON 元素。以下示例首先构造一个空对象，然后插入上述元素：
 
 [source]
 ----

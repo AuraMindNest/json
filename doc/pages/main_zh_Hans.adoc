@@ -18,22 +18,22 @@ Official repository: https://github.com/boostorg/json
 :source-highlighter: rouge
 :source-language: c++
 
-include::definitions.adoc[]
+include::definitions_zh_Hans.adoc[]
 
-include::../../README.adoc[]
+include::../../README_zh_Hans.adoc[]
 
 :leveloffset: +1
 
-include::quick_look.adoc[]
-include::dom/overview.adoc[]
-include::allocators/overview.adoc[]
-include::io/overview.adoc[]
-include::conversion/overview.adoc[]
-include::examples.adoc[]
-include::faq.adoc[]
-include::benchmarks.adoc[]
-include::comparison.adoc[]
-include::reference.adoc[]
-include::../../CHANGELOG.adoc[]
+include::quick_look_zh_Hans.adoc[]
+include::dom/overview_zh_Hans.adoc[]
+include::allocators/overview_zh_Hans.adoc[]
+include::io/overview_zh_Hans.adoc[]
+include::conversion/overview_zh_Hans.adoc[]
+include::examples_zh_Hans.adoc[]
+include::faq_zh_Hans.adoc[]
+include::benchmarks_zh_Hans.adoc[]
+include::comparison_zh_Hans.adoc[]
+include::reference_zh_Hans.adoc[]
+include::../../CHANGELOG_zh_Hans.adoc[]
 
 :leveloffset: -1

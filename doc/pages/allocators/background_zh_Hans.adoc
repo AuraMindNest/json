@@ -9,7 +9,7 @@ Official repository: https://github.com/boostorg/json
 ////
 
 = 背景
-C++中分配器的第一个版本定义了名为{req_Allocator}的要求，并将每个标准容器设计为以分配器类型为模板参数的类模板。例如，以下是 {std_vector} 的声明：
+c{plus}{plus}中分配器的第一个版本定义了名为{req_Allocator}的要求，并将每个标准容器设计为以分配器类型为模板参数的类模板。例如，以下是 {std_vector} 的声明：
 
 [source]
 ----
@@ -68,7 +68,7 @@ include::../../../test/doc_background.cpp[tag=doc_background_6,indent=0]
 include::../../../test/doc_background.cpp[tag=doc_background_7,indent=0]
 ----
 
-可通过声明容器使用自定义分配器（可能使用`std::shared_ptr&lt; std::pmr::memory_resource &gt;`作为数据成员）来解决此问题。这会阻碍库的组合；每个库都会导出各自独特且互不兼容的容器类型。原始内存资源指针也容易被误用：
+可通过声明容器使用自定义分配器（可能使用 `std::shared_ptr&lt; std::pmr::memory_resource &gt;` 作为数据成员）来解决此问题。这会阻碍库的组合；每个库都会导出各自独特且互不兼容的容器类型。原始内存资源指针也容易被误用：
 
 [source]
 ----
@@ -79,11 +79,11 @@ include::../../../test/doc_background.cpp[tag=doc_background_8,indent=0]
 
 == 问题陈述
 
-我们希望采用一种使用单一类型`T`的分配器模型，该模型具有以下特性：
+我们希望采用一种使用单一类型 `T` 的分配器模型，该模型具有以下特性：
 
-* `T`不是类模板
-* `T`引用一个 {ref_memory_resource}
-* `T`同时支持引用语义和共享所有权
-* `T`能与已使用`std::pmr`的代码互操作
+* `T` 不是类模板
+* `T` 引用一个 {ref_memory_resource}
+* `T` 同时支持引用语义和共享所有权
+* `T` 能与已使用 `std::pmr` 的代码互操作
 
 Boost.JSON通过引入一个名为<<ref_storage_ptr>> 的新型智能指针解决此问题，该指针基于{cpp}17的内存分配接口构建，实现了上述目标。因此，使用该类型的库更易于组合，并能获得更快的编译速度，因为使用该类型的容器的成员函数可以定义在类外（out-of-line）。

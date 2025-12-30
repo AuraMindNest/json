@@ -14,11 +14,11 @@ Official repository: https://github.com/boostorg/json
 :icon_good: pass:q[[.green]##&#10004##]
 :icon_bad:  pass:q[[.red]##&#10008##]
 
-C++ 中存在众多 JSON 库，但为了比较的目的，有三个在对比中尤为值得关注：https://rapidjson.org/[RapidJSON]、https://nlohmann.github.io/json/[JSON for Modern {cpp}]（本文中称为 nlohmann's JSON， 或简称 nlohmann）以及https://github.com/lemire/simdjson[SIMD JSON]。
+C{plus}{plus} 中存在众多 JSON 库，但为了比较的目的，有三个在对比中尤为值得关注：https://rapidjson.org/[RapidJSON]、https://nlohmann.github.io/json/[JSON for Modern {cpp}]（本文中称为 nlohmann's JSON， 或简称 nlohmann）以及https://github.com/lemire/simdjson[SIMD JSON]。
 
 == 与nlohmann JSON的比较
 
-值类型：https://github.com/nlohmann/json/blob/00cb98a3d170161711ab912ae6acefba31f29f75/include/nlohmann/json.hpp#L165[`nlohmann::basic_json`]
+值类型： https://github.com/nlohmann/json/blob/00cb98a3d170161711ab912ae6acefba31f29f75/include/nlohmann/json.hpp#L165[ `nlohmann::basic_json` ]
 
 [source]
 ----
@@ -60,7 +60,7 @@ private:
 
 == 与RapidJSON的比较
 
-值类型：https://github.com/Tencent/rapidjson/blob/bb5f966b9939d6cdfbac3462a0410e185099b3af/include/rapidjson/document.h#L608[`rapidjson::GenericValue`]
+值类型： https://github.com/Tencent/rapidjson/blob/bb5f966b9939d6cdfbac3462a0410e185099b3af/include/rapidjson/document.h#L608[`rapidjson::GenericValue`]
 
 [source]
 ----

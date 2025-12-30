@@ -58,7 +58,7 @@ include::../../../test/snippets.cpp[tag=snippet_init_list_6,indent=0]
 include::../../../test/snippets.cpp[tag=snippet_init_list_7,indent=0]
 ----
 
-同样，用于 <<ref_object>> 的初始化列表始终会被解释为 <<ref_object>>。此时，初始化列表必须由键值对组成。例如，以下代码无法编译，因为` `1 无法转换为字符串：
+同样，用于 <<ref_object>> 的初始化列表始终会被解释为 <<ref_object>>。此时，初始化列表必须由键值对组成。例如，以下代码无法编译，因为 `1` 无法转换为字符串：
 
 [source]
 ----
@@ -84,4 +84,4 @@ include::../../../test/snippets.cpp[tag=snippet_init_list_9,indent=0]
 请勿创建类型为 {std_initializer_list} 的变量。这可能导致临时对象在初始化列表被使用之前就被销毁。
 ====
 
-在所有情况下，通过初始化列表构造的 <<ref_object>>、<<ref_array>> 或 <<ref_value>> 所拥有的 <<ref_storage_ptr>> 都会递归地传播到每个元素。
+在所有情况下，通过初始化列表构造的 <<ref_object>>,<<ref_array>> 或 <<ref_value>> 所拥有的 <<ref_storage_ptr>> 都会递归地传播到每个元素。

@@ -9,7 +9,10 @@ Official repository: https://github.com/boostorg/json
 ////
 
 = `storage_ptr`
-本库中的可变长度容器均使用动态分配的内存来存储其内容。调用方可通过在特定构造函数和函数参数列表中指定 <<ref_storage_ptr>> ，以控制所使用的内存分配策略。<<ref_storage_ptr>> 具有以下特性：
+本库中的可变长度容器均使用动态分配的内存来存储其内容。
+调用方可通过在特定构造函数和函数参数列表中
+指定 <<ref_storage_ptr>> ，以控制所使用的内存分配策略。
+<<ref_storage_ptr>> 具有以下特性：
 
 * 存储指针始终指向一个有效的、类型擦除后的 {ref_memory_resource}。
 
@@ -141,7 +144,7 @@ include::../../../test/doc_storage_ptr.cpp[tag=doc_storage_ptr_9,indent=0]
 当存储指针以这种方式构造时，其所引用的内存资源的生命周期将延长，直至所有引用它的变量均被销毁为止。
 
 == 用户定义资源
-要实现自定义内存分配策略，请从 {ref_memory_resource} 派生类，并实现函数 `do_allocate`、`do_deallocate` 和 `do_is_equal`，如下例所示，该示例将其执行的每个操作记录到控制台：
+要实现自定义内存分配策略，请从 {ref_memory_resource} 派生类，并实现函数 `do_allocate`, `do_deallocate` 和 `do_is_equal`, 如下例所示，该示例将其执行的每个操作记录到控制台：
 
 [source]
 ----

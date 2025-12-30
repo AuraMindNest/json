@@ -8,7 +8,9 @@ Official repository: https://github.com/boostorg/json
 ////
 
 = 避免物理依赖
-一些用户（尤其是库作者）可能希望为其类型与 <<ref_value>> 提供转换功能，但同时又希望避免让自己的库依赖 Boost.JSON。借助一些前向声明，即可实现这一目标。
+一些用户（尤其是库作者）可能希望为其类型与
+<<ref_value>> 提供转换功能，但同时又希望避免让自己的库依赖 Boost.JSON。
+借助一些前向声明，即可实现这一目标。
 
 [source]
 ----
@@ -17,7 +19,7 @@ include::../../../test/doc_forward_conversion.cpp[tag=doc_forward_conversion_1,i
 
 请注意，<<ref_value_from>> 是通过输出参数声明的，而非返回其结果。该重载正是为这一使用场景而设计的。
 
-之后应提供 `tag_invoke` 重载的定义。这些重载必须是模板，因为 <<ref_value>> 仅是前向声明的，因此是一个不完整类型。</ref_value>
+之后应提供 `tag_invoke` 重载的定义。这些重载必须是模板，因为 <<ref_value>> 仅是前向声明的，因此是一个不完整类型。
 
 [source]
 ----

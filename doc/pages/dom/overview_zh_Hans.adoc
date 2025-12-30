@@ -44,11 +44,11 @@ using namespace boost::json;
 ====
 
 :leveloffset: +1
-include::value.adoc[]
-include::string.adoc[]
-include::array.adoc[]
-include::object.adoc[]
-include::numbers.adoc[]
-include::init_lists.adoc[]
-include::nested_access.adoc[]
+include::value_zh_Hans.adoc[]
+include::string_zh_Hans.adoc[]
+include::array_zh_Hans.adoc[]
+include::object_zh_Hans.adoc[]
+include::numbers_zh_Hans.adoc[]
+include::init_lists_zh_Hans.adoc[]
+include::nested_access_zh_Hans.adoc[]
 :leveloffset: -1

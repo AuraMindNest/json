@@ -10,7 +10,9 @@ Official repository: https://github.com/boostorg/json
 
 [#uses_allocator]
 = 使用分配器构造
-为支持已使用多态分配器的代码库，本库中的容器支持 {std_uses_allocator} 构造。对于 <<ref_array>>, <<ref_object>>, <<ref_string>> 和 <<ref_value>>：
+为支持已使用多态分配器的代码库，本库中的容器
+支持 {std_uses_allocator} 构造。对于
+<<ref_array>>, <<ref_object>>, <<ref_string>> 和 <<ref_value>>：
 
 * 嵌套类型 `allocator_type` 是{ref_polymorphic_allocator}的别名。
 

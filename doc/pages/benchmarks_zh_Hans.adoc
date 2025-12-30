@@ -10,7 +10,7 @@ Official repository: https://github.com/boostorg/json
 
 [pagelevels=1,toclevels=1]
 = 基准测试
-本节将 Boost.JSON 与两个广泛使用的具有类似功能的库进行性能比较：以高性能著称的 RapidJSON 和以功能丰富著称的JSON for Modern C++ 库（nlohmann/json）。bench 程序测量解析和序列化一组代表典型工作负载的 JSON 的吞吐量。评估的实现包括：
+本节将 Boost.JSON 与两个广泛使用的具有类似功能的库进行性能比较：以高性能著称的 RapidJSON 和以功能丰富著称的JSON for Modern C{plus}{plus} 库（nlohmann/json）。bench 程序测量解析和序列化一组代表典型工作负载的 JSON 的吞吐量。评估的实现包括：
 
 .实现
 |===
@@ -20,16 +20,16 @@ Official repository: https://github.com/boostorg/json
 | 使用 <<ref_monotonic_resource>> 解析输入，该资源针对解析后不进行后续修改的场景进行了优化。<<ref_stream_parser>> 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。
 
 | *boost*
-| 使用 <<default_memory_resource>> 解析输入，该资源基于标准 C++ 分配器，适用于通用场景，包括在解析后对文档进行修改。<<ref_stream_parser>> 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。
+| 使用 <<default_memory_resource>> 解析输入，该资源基于标准 C{plus}{plus} 分配器，适用于通用场景，包括在解析后对文档进行修改。<<ref_stream_parser>> 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。
 
 | *rapidjson(pool)*
 | 使用 https://rapidjson.org/classrapidjson_1_1_memory_pool_allocator.html[`MemoryPoolAllocator`] 的实例解析输入，该分配器针对“仅解析、不修改”的场景进行了优化。持有临时内存的 https://rapidjson.org/classrapidjson_1_1_generic_document.html[`Document`] 对象在多次测试之间不重复使用，否则内存消耗将无限增长，从而导致基准测试结果无效。
 
 | *rapidjson*
-| 使用 https://rapidjson.org/classrapidjson_1_1_crt_allocator.html[`CrtAllocator`] 的实例解析输入，该分配器使用标准 C++ 分配器，适用于通用场景，包括解析后对文档的修改。持有临时内存的 https://rapidjson.org/classrapidjson_1_1_generic_document.html[`Document`] 对象在多次测试之间不重复使用，否则内存消耗将无限增长，导致基准测试结果无效。
+| 使用 https://rapidjson.org/classrapidjson_1_1_crt_allocator.html[`CrtAllocator`] 的实例解析输入，该分配器使用标准 C{plus}{plus} 分配器，适用于通用场景，包括解析后对文档的修改。持有临时内存的 https://rapidjson.org/classrapidjson_1_1_generic_document.html[`Document`] 对象在多次测试之间不重复使用，否则内存消耗将无限增长，导致基准测试结果无效。
 
 | *nlohmann*
-| 使用静态成员函数 https://nlohmann.github.io/json/classnlohmann_1_1basic__json_ab330c13ba254ea41fbc1c52c5c610f45.html[`json::parse`] 解析输入，该函数使用默认的 `std` 分配器，适用于通用场景，包括解析后对文档的修改。该库未提供复用解析或序列化过程中所用临时存储的接口，因此无法在后续操作中重用这些临时内存。
+| 使用静态成员函数 https://nlohmann.github.io/json/classnlohmann_1_1basic__json_ab330c13ba254ea41fbc1c52c5c610f45.html[`json::parse`] 解析输入，该函数使用默认的`std`分配器，适用于通用场景，包括解析后对文档的修改。该库未提供复用解析或序列化过程中所用临时存储的接口，因此无法在后续操作中重用这些临时内存。
 |===
 
 == 方法论

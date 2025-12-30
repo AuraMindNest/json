@@ -85,7 +85,7 @@ include::../../../test/doc_parsing.cpp[tag=doc_parsing_6,indent=0]
 include::../../../test/doc_parsing.cpp[tag=doc_parsing_15,indent=0]
 ----
 
-CAUTION: 启用注释支持时，读取输入时需格外注意不要丢失空白字符。例如，`std::getline`会从它生成的字符串中移除行尾字符。
+CAUTION: 启用注释支持时，读取输入时需格外注意不要丢失空白字符。例如，`std::getline` 会从它生成的字符串中移除行尾字符。
 
 == 全精度数字解析
 库默认使用的数字解析算法速度较快，但可能导致轻微的精度损失。这在某些应用中可能不可接受，因此可以选择启用一种没有此缺陷但速度稍慢的替代算法。为此，您还需要使用<<ref_parse_options>>结构体。
@@ -136,7 +136,7 @@ include::../../../test/doc_parsing.cpp[tag=doc_parsing_9,indent=0]
 * 减少抖动、不公平性和延迟
 * 处理完整输入所需的总内存更少
 
-要使用 <<ref_stream_parser>>，请先声明一个实例。然后对表示输入 JSON 的连续缓冲区零次或多次调用 <<ref_stream_parser_write>>。当没有更多缓冲区时，调用 <<ref_stream_parser_finish>>。在成功调用`write`或`finish`后，若解析已完成，函数 <<ref_stream_parser_done>> 将返回`true`。
+要使用 <<ref_stream_parser>>，请先声明一个实例。然后对表示输入 JSON 的连续缓冲区零次或多次调用 <<ref_stream_parser_write>>。当没有更多缓冲区时，调用 <<ref_stream_parser_finish>>。在成功调用 `write` 或 `finish` 后，若解析已完成，函数 <<ref_stream_parser_done>> 将返回 `true`。
 
 在以下示例中，JSON文本从标准输入逐行解析。此处使用错误码替代异常。函数<<ref_stream_parser_finish>>用于指示输入结束：
 
@@ -155,7 +155,7 @@ include::../../../test/doc_parsing.cpp[tag=doc_parsing_14,indent=0]
 ----
 
 == 控制内存
-在默认构造之后，或在无参调用 <<ref_stream_parser_reset>> 之后，成功解析操作所生成的 <<ref_value>> 将使用默认内存资源。若要使用不同的内存资源，可调用 `reset`并传入目标资源。以下示例使用了 <<ref_monotonic_resource>>，该资源针对解析进行了优化，但不适合后续修改
+在默认构造之后，或在无参调用 <<ref_stream_parser_reset>> 之后，成功解析操作所生成的 <<ref_value>> 将使用默认内存资源。若要使用不同的内存资源，可调用 `reset` 并传入目标资源。以下示例使用了 <<ref_monotonic_resource>>，该资源针对解析进行了优化，但不适合后续修改
 
 [source]
 ----

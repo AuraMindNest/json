@@ -10,11 +10,17 @@ Official repository: https://github.com/boostorg/json
 
 [#dom_value]
 = `value`
-JSON文档在内存中表示为<<ref_value>>的实例：一种{req_Regular}类型，满足{req_DefaultConstructible}、{req_CopyConstructible}、{req_CopyAssignable}、{req_MoveConstructible}、{req_MoveAssignable}以及许多分配器感知容器的要求。它在内部实现为一个https://en.wikipedia.org/wiki/Tagged_union[__variant__]（变体），并且可以动态存储六种已定义的JSON值类型中的任意一种：
+JSON文档在内存中表示为<<ref_value>>的实例：一种
+{req_Regular}类型，满足{req_DefaultConstructible}、
+{req_CopyConstructible}, {req_CopyAssignable}, {req_MoveConstructible},
+{req_MoveAssignable}以及许多分配器感知容器的要求。
+它在内部实现为一个
+https://en.wikipedia.org/wiki/Tagged_union[__variant__]（变体），
+并且可以动态存储六种已定义的JSON值类型中的任意一种：
 
-* **空值**：一种https://en.cppreference.com/w/cpp/utility/variant/monostate[__monostate__]（单态）值，等同于`nullptr`。
+* **空值**：一种 https://en.cppreference.com/w/cpp/utility/variant/monostate[__monostate__]（单态）值，等同于`nullptr`。
 
-* **布尔值**：布尔类型，取值为`true`或`false`。
+* **布尔值**：布尔类型，取值为 `true` 或 `false`。
 
 * **数值**：整型或浮点型值。
 
@@ -22,17 +28,17 @@ JSON文档在内存中表示为<<ref_value>>的实例：一种{req_Regular}类�
 
 * **数组**：值的有序列表，类似于{std_vector}。
 
-* **对象**：名称/值对的集合，也称为https://en.wikipedia.org/wiki/Associative_array[__关联数组__]。
+* **对象**：名称/值对的集合，也称为 https://en.wikipedia.org/wiki/Associative_array[__关联数组__]。
 
 == 处理值
-从`nullptr`构造或默认构造的 <<ref_value>> 表示一个空的JSON元素：
+从 `nullptr` 构造或默认构造的 <<ref_value>> 表示一个空的JSON元素：
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_value_1,indent=0]
 ----
 
-成员函数<<ref_value_kind,`value::kind`>>可用于查询值中存储的种类。或者，也可以使用诸如<<ref_value_is_object,`value::is_object`>>、<<ref_value_is_number,`value::is_number`>> 等成员函数来检查值是否为特定种类：
+成员函数<<ref_value_kind,`value::kind`>>可用于查询值中存储的种类。或者，也可以使用诸如<<ref_value_is_object,`value::is_object`>>,<<ref_value_is_number,`value::is_number`>> 等成员函数来检查值是否为特定种类：
 
 [source]
 ----

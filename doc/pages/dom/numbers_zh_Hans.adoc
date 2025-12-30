@@ -10,14 +10,17 @@ Official repository: https://github.com/boostorg/json
 
 [#dom_numbers]
 = 数字
-JSON数字使用`std::int64_t`、`std::uint64_t`和`double`表示。当 <<ref_value>> 从无符号整数构造时，其<<ref_kind>>将为`kind::uint64`。同样，从有符号整数构造的<<ref_value>> 将具有`kind::int64`，若从浮点类型构造则为`kind::double_`：
+JSON数字使用 `std::int64_t`, `std::uint64_t` 和
+`double` 表示。当
+<<ref_value>> 从无符号整数构造时，其<<ref_kind>>将为 `kind::uint64`。
+同样，从有符号整数构造的<<ref_value>> 将具有 `kind::int64`，若从浮点类型构造则为 `kind::double_`：
 
 [source]
 ----
 include::../../../test/doc_using_numbers.cpp[tag=doc_using_numbers_1,indent=0]
 ----
 
-访问<<ref_value>>内包含的数字时，所使用的函数必须与该值的<<ref_kind>>完全匹配；不会执行任何转换。例如，如果在一个包含`std::uint64_t` 的 <<ref_value>> 上调用 `as_double`，将抛出异常。类似地，函数 `if_double` 将返回`nullptr`，而调用 `get_double` 将导致未定义行为：
+访问<<ref_value>>内包含的数字时，所使用的函数必须与该值的<<ref_kind>>完全匹配；不会执行任何转换。例如，如果在一个包含 `std::uint64_t` 的 <<ref_value>> 上调用 `as_double`，将抛出异常。类似地，函数 `if_double` 将返回 `nullptr`，而调用 `get_double` 将导致未定义行为：
 
 [source]
 ----
@@ -31,14 +34,13 @@ include::../../../test/doc_using_numbers.cpp[tag=doc_using_numbers_2,indent=0]
 include::../../../test/doc_using_numbers.cpp[tag=doc_using_numbers_3,indent=0]
 ----
 
-若<<ref_value>>不包含数字，或当转换目标为整数类型`T`且数字无法被`T`精确表示时，将导致转换失败。否则，结果是通过`static_cast`将数字转换为`T`所得的值：</ref_value>
-
+若<<ref_value>>不包含数字，或当转换目标为整数类型 `T` 且数字无法被 `T` 精确表示时，将导致转换失败。否则，结果是通过 `static_cast` 将数字转换为 `T` 所得的值：
 [source]
 ----
 include::../../../test/doc_using_numbers.cpp[tag=doc_using_numbers_4,indent=0]
 ----
 
-在无法使用异常的场合，可改用接受{ref_error_code}的`value::to_number`重载，其语义与抛出异常版本完全相同：
+在无法使用异常的场合，可改用接受{ref_error_code}的 `value::to_number` 重载，其语义与抛出异常版本完全相同：
 
 [source]
 ----
@@ -56,7 +58,7 @@ include::../../../test/doc_using_numbers.cpp[tag=doc_using_numbers_6,indent=0]
 
 * 包含小数点，或
 * 包含指数，或
-* 为负数且其值小于`INT64_MIN`，或
-* 为正数且其值大于`UINT64_MAX`，
+* 为负数且其值小于 `INT64_MIN`，或
+* 为正数且其值大于 `UINT64_MAX`，
 
-则其类型为`double`。否则，若数字为正数且其值大于`INT64_MAX`，则其类型为`std::uint64_t`。其余所有数字均被解析为`std::int64_t`。
+则其类型为 `double`。否则，若数字为正数且其值大于 `INT64_MAX`，则其类型为 `std::uint64_t`。其余所有数字均被解析为 `std::int64_t`。
