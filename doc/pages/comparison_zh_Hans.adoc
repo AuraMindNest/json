@@ -22,17 +22,17 @@ C++ 中存在众多 JSON 库，但为了比较的目的，有三个在对比中�
 
 [source]
 ----
-template&lt;
-  template<typename, typename,="" typename...=""> class ObjectType,
-  template<typename, typename...=""> class ArrayType,
+template<
+  template<typename, typename, typename...> class ObjectType,
+  template<typename, typename...> class ArrayType,
   class StringType,
   class BooleanType,
   class NumberIntegerType,
   class NumberUnsignedType,
   class NumberFloatType,
   template<typename> class AllocatorType,
-  template<typename, typename="void"> class JSONSerializer
-  &gt;
+  template<typename, typename = void> class JSONSerializer
+  >
 class basic_json
 {
 private:
@@ -40,7 +40,7 @@ private:
   friend ::nlohmann::detail::parser<basic_json>;
   friend ::nlohmann::detail::serializer<basic_json>;
 ...
-</basic_json></basic_json></typename,></typename></typename,></typename,>----
+----
 
 该库采用了一种“大而全”（kitchen sink）的设计理念，包含大量功能，甚至涵盖一些使用场景非常小众的特性。其弱点在于：尽管众多模板参数提供了高度可配置性，却阻碍了编译器实现最优的性能优化。其结果是性能表现较差。这种对值类型各方面均可配置的能力，反而使其作为通用类型的适用性降低，形成了一种悖论效应。
 
@@ -64,17 +64,17 @@ private:
 
 [source]
 ----
-template <typename encoding,="" typename="" allocator="MemoryPoolAllocator<"> &gt;
+template <typename Encoding, typename Allocator = MemoryPoolAllocator<> >
 class GenericValue;
-</typename>
-template <bool const,="" typename="" valuet="">
-class GenericArray;
-</bool>
-template <bool const,="" typename="" valuet="">
-class GenericObject;
-</bool>----
 
-* {icon_bad} 值类型不满足“正规性”要求。赋值具有破坏性，执行 `a = b` 等同于 `a = std::move(b)`，且不允许拷贝构造和拷贝赋值。
+template <bool Const, typename ValueT>
+class GenericArray;
+
+template <bool Const, typename ValueT>
+class GenericObject;
+----
+
+* {icon_bad} 值类型不满足“正规性”要求。赋值具有破坏性，执行 `a = b` 等同于 `a = std::move(b)`，且不允许复制构造和复制赋值。
 
 * {icon_bad} 对象类型没有哈希表或索引用于降低查找成本。
 
