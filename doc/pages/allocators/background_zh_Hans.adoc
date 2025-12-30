@@ -75,7 +75,7 @@ include::../../../test/doc_background.cpp[tag=doc_background_7,indent=0]
 include::../../../test/doc_background.cpp[tag=doc_background_8,indent=0]
 ----
 
-针对此问题的变通方案往往比问题本身更糟糕。该库可以返回一个包含 vector 和`std::unique_ptr<std::pmr::memory_resource>`的pair，必须由调用方自行管理。或者，该库也可以修改其函数签名，接受调用方提供的{ref_memory_resource}``*``，同时将所需的内存资源（如上文的`my_resource`）公开。</std::pmr::memory_resource>
+针对此问题的变通方案往往比问题本身更糟糕。该库可以返回一个包含 vector 和`std::unique_ptr<std::pmr::memory_resource>`的pair，必须由调用方自行管理。或者，该库也可以修改其函数签名，接受调用方提供的{ref_memory_resource}``*``，同时将所需的内存资源（如上文的`my_resource`）公开。
 
 == 问题陈述
 
@@ -86,4 +86,4 @@ include::../../../test/doc_background.cpp[tag=doc_background_8,indent=0]
 * `T`同时支持引用语义和共享所有权
 * `T`能与已使用`std::pmr`的代码互操作
 
-Boost.JSON通过引入一个名为&lt;<ref_storage_ptr>&gt;的新型智能指针解决此问题，该指针基于{cpp}17的内存分配接口构建，实现了上述目标。因此，使用该类型的库更易于组合，并能获得更快的编译速度，因为使用该类型的容器的成员函数可以定义在类外（out-of-line）。</ref_storage_ptr>
+Boost.JSON通过引入一个名为<<ref_storage_ptr>> 的新型智能指针解决此问题，该指针基于{cpp}17的内存分配接口构建，实现了上述目标。因此，使用该类型的库更易于组合，并能获得更快的编译速度，因为使用该类型的容器的成员函数可以定义在类外（out-of-line）。
