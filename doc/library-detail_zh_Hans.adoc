@@ -38,7 +38,7 @@ https://www.boost.org/doc/libs/release/libs/json/[image:https://raw.githubuserco
 
 Boost.JSON 是一个可移植的 C++ 库，提供了实现 [JavaScript Object Notation](https://json.org/)（简称 “JSON”）的容器和算法，这是一种轻量级的数据交换格式。该格式易于人类读写，也易于机器解析和生成。该格式基于 JavaScript 编程语言的一个子集（[ECMA-262 标准](https://www.ecma-international.org/ecma-262/10.0/index.html)），目前已在 [RFC 8259](https://datatracker.ietf.org/doc/html/rfc8259) 中标准化。JSON 是一种独立于语言但使用 C 语言家族（包括 C、C++、C#、Java、JavaScript、Perl、Python 等）程序员熟悉的约定的文本格式。这些特性使 JSON 成为理想的数据交换语言。
 
-该库专注于一个常见且广泛使用的场景：解析和序列化到一个名为 `value` 的容器，或从中进行解析和序列化（该容器用于存储 JSON 类型）。任何构建的 ‘value’ 都可以被序列化后再反序列化，并保证结果与原始值相等。使用该库生成的任何 JSON 输出，均可被大多数主流编程语言中的常见 JSON 实现正确读取。
+该库专注于一个常见且广泛使用的场景：解析和序列化到一个名为 `value` 的容器，或从中进行解析和序列化（该容器用于存储 JSON 类型）。任何构建的 `value` 都可以被序列化后再反序列化，并保证结果与原始值相等。使用该库生成的任何 JSON 输出，均可被大多数主流编程语言中的常见 JSON 实现正确读取。
 
 `value` 容器被设计为一种适合作为公共接口和库中词汇类型的组件，便于组合使用。该库将可表示的数据类型限制在绝大多数 JSON 实现（尤其是 JavaScript）普遍接受的范围内。解析器和序列化器均具备高性能，其基准性能达到或超过了同类优秀库的水平。对分配器的支持非常完善。使用这些类型的代码将易于理解、灵活且高效。
 
@@ -52,7 +52,7 @@ Boost.JSON 提供以下特性：
 * 提供易于使用且安全的现代 API，并支持分配器
 * 可选的纯头文件方式，无需链接库
 
-获取完整文档请访问以下链接： https://boost.org/libs/json
+若要获取完整文档请访问以下链接： https://boost.org/libs/json
 
 === 要求
 
@@ -68,13 +68,13 @@ Boost.JSON 提供以下特性：
 
 ==== 纯头文件
 
-要使用纯头文件模式（即无需将程序链接到静态或动态的 Boost.JSON 库），只需在项目中一个新建或现有源文件中添加以下行。
+要使用纯头文件模式（即无需将程序链接到静态或动态的 Boost.JSON 库），只需在项目中恰好一个新建或现有源文件中添加以下行。
 
 ....
 #include <boost/json/src.hpp>
 ....
 
-MSVC 用户还必须定义宏 `BOOST_JSON_NO_LIB` 以禁用自动链接。
+MSVC 用户还必须定义宏 `BOOST_JSON_NO_LIB` ，以禁用自动链接。
 
 ==== 嵌入式
 
