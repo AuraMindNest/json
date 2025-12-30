@@ -16,26 +16,26 @@ Official repository: https://github.com/boostorg/json
 |===
 |Name|描述
 
-| &lt;<ref_basic_parser>&gt;</ref_basic_parser>
+| <<ref_basic_parser>>
 | 一个 SAX 推送式解析器实现，它将序列化的 JSON 文本转换为对用户提供的处理器的一系列成员函数调用，从而允许自定义内存中文档的表示行为。
 
-| &lt;<ref_parse_options>&gt;</ref_parse_options>
+| <<ref_parse_options>>
 | 一种结构，用于选择在解析期间启用哪些扩展。
 
-| &lt;<ref_parse>&gt;</ref_parse>
-| 解析包含完整序列化 JSON 文本的字符串，并返回一个 &lt;<ref_value>&gt;。</ref_value>
+| <<ref_parse>>
+| 解析包含完整序列化 JSON 文本的字符串，并返回一个 <<ref_value>>。
 
-| &lt;<ref_parser>&gt;</ref_parser>
-| 一种有状态的 DOM 解析器对象，可用于高效解析一系列 JSON 文本（每个文本均位于单独的连续字符缓冲区中），并将每个结果作为&lt;<ref_value>&gt;返回。</ref_value>
+| <<ref_parser>>
+| 一种有状态的 DOM 解析器对象，可用于高效解析一系列 JSON 文本（每个文本均位于单独的连续字符缓冲区中），并将每个结果作为<<ref_value>>返回。
 
-| &lt;<ref_stream_parser>&gt;</ref_stream_parser>
-| 一种有状态的DOM解析器对象，可用于高效地增量解析一系列JSON文本，并将每个结果作为&lt;<ref_value>&gt;返回。</ref_value>
+| <<ref_stream_parser>>
+| 一种有状态的DOM解析器对象，可用于高效地增量解析一系列JSON文本，并将每个结果作为<<ref_value>>返回。
 
-| &lt;<ref_value_stack>&gt;</ref_value_stack>
-| 一种用于高效构建&lt;<ref_value>&gt;的低层构建块。解析器在内部使用它，用户也可以使用它来适配外部解析器以生成此库的容器。</ref_value>
+| <<ref_value_stack>>
+| 一种用于高效构建 <<ref_value>> 的低层构建块。解析器在内部使用它，用户也可以使用它来适配外部解析器以生成此库的容器。
 |===
 
-&lt;<ref_parse>&gt;函数提供了一个简单接口，用于在单个函数调用中将序列化的JSON文本转换为&lt;<ref_value>&gt;。此重载使用异常来指示错误：</ref_value></ref_parse>
+<<ref_parse>> 函数提供了一个简单接口，用于在单个函数调用中将序列化的JSON文本转换为<<ref_value>>。此重载使用异常来指示错误：
 
 [source]
 ----
