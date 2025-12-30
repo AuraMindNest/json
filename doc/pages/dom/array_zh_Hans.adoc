@@ -10,9 +10,9 @@ Official repository: https://github.com/boostorg/json
 
 [#dom_array]
 = `array`
-一个 &lt;<ref_value>&gt; 存储一个 &lt;<ref_array>&gt; 的实例，作为 JSON 数组的底层表示。__array__ 类型的实例与存储 &lt;<ref_value>&gt; 的 {std_vector} 功能完全相同。此外，所有插入容器的值将使用与容器本身相同的 &lt;<ref_storage_ptr>&gt;。</ref_storage_ptr></ref_value></ref_array></ref_value>
+一个 <<ref_value>> 存储一个 <<ref_array>> 的实例，作为 JSON 数组的底层表示。__array__ 类型的实例与存储 <<ref_value>> 的 {std_vector} 功能完全相同。此外，所有插入容器的值将使用与容器本身相同的 <<ref_storage_ptr>>。
 
-可以使用 &lt;&gt; 构造一个空数组，而不会产生任何内存分配。也可以显式指定一个 &lt;<ref_storage_ptr>&gt;：</ref_storage_ptr>
+可以使用 <<default_memory_resource,default memory resource>> 构造一个空数组，而不会产生任何内存分配。也可以显式指定一个 <<ref_storage_ptr>>：
 
 [source]
 ----
@@ -33,15 +33,15 @@ include::../../../test/snippets.cpp[tag=snippet_arrays_2,indent=0]
 include::../../../test/snippets.cpp[tag=snippet_arrays_3,indent=0]
 ----
 
-与标准库中的对应容器类似，元素可通过从 0 开始的索引直接访问：使用 &lt;<ref_array_at>&gt; 进行带边界检查的访问，或使用 &lt;<ref_array_operator_lb_rb>&gt; 进行不带边界检查的访问：</ref_array_operator_lb_rb></ref_array_at>
+与标准库中的对应容器类似，元素可通过从 0 开始的索引直接访问：使用 &lt;<<ref_array_at>> 进行带边界检查的访问，或使用 <<ref_array_operator_lb_rb>> 进行不带边界检查的访问：
 
 [source]
 ----
 include::../../../test/snippets.cpp[tag=snippet_arrays_4,indent=0]
 ----
 
-有关所有可用成员函数和嵌套类型的完整列表，请参阅 &lt;<ref_array>&gt; 的参考页面。</ref_array>
+有关所有可用成员函数和嵌套类型的完整列表，请参阅 <<ref_array>> 的参考页面。
 
 == 格式化输出
 
-当 &lt;<ref_array>&gt; 被格式化输出到 {std_ostream} 时，结果是一个有效的 JSON。也就是说，该数组将按照 JSON 规范，以方括号和逗号分隔的值列表的形式输出。</ref_array> 当将 &lt;<ref_array>&gt; 格式化输出到 {std_ostream} 时，结果是一个符合 JSON 规范的有效 JSON 文本：数组将以方括号包围，并以逗号分隔其中的值。</ref_array>
+当将 <<ref_array>> 输出到 {std_ostream} 时，结果是一个符合 JSON 规范的有效 JSON：数组将以方括号括起，并以逗号分隔其中的值。
