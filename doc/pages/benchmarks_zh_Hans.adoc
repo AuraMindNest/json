@@ -17,10 +17,10 @@ Official repository: https://github.com/boostorg/json
 |Name|描述
 
 | *boost(pool)*
-| 使用 &lt;<ref_monotonic_resource>&gt; 解析输入，该资源针对解析后不进行后续修改的场景进行了优化。&lt;<ref_stream_parser>&gt; 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。</ref_stream_parser></ref_monotonic_resource>
+| 使用 <<ref_monotonic_resource>> 解析输入，该资源针对解析后不进行后续修改的场景进行了优化。<<ref_stream_parser>> 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。
 
 | *boost*
-| 使用 &lt;<default_memory_resource,>&gt; 解析输入，该资源基于标准 C++ 分配器，适用于通用场景，包括在解析后对文档进行修改。&lt;<ref_stream_parser>&gt; 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。</ref_stream_parser></default_memory_resource,>
+| 使用 <<default_memory_resource>> 解析输入，该资源基于标准 C++ 分配器，适用于通用场景，包括在解析后对文档进行修改。<<ref_stream_parser>> 对象在各次试验之间被复用，使得实现所分配的临时内存得以保留，从而提升性能。
 
 | *rapidjson(pool)*
 | 使用 https://rapidjson.org/classrapidjson_1_1_memory_pool_allocator.html[`MemoryPoolAllocator`] 的实例解析输入，该分配器针对“仅解析、不修改”的场景进行了优化。持有临时内存的 https://rapidjson.org/classrapidjson_1_1_generic_document.html[`Document`] 对象在多次测试之间不重复使用，否则内存消耗将无限增长，从而导致基准测试结果无效。
@@ -39,61 +39,61 @@ Official repository: https://github.com/boostorg/json
 
 .输入文件
 |===
-|Name|大小e|描述
+|Name|Size|描述
 
-| &lt;<parse_apache_builds_json,*apache_builds.json*>&gt;</parse_apache_builds_json,*apache_builds.json*>
+| <<parse_apache_builds_json,*apache_builds.json*>>
 | 125KB
 | 来自 Apache Jenkins 安装的数据。
 
-| &lt;<parse_canada_json,*canada.json*>&gt;</parse_canada_json,*canada.json*>
+| <<parse_canada_json,*canada.json*>>
 | 2.2MB
 | 最大的文件，包含大量由两个浮点数坐标对组成的二元数组。
 
-| &lt;<parse_citm_catalog_json,*citm_catalog.json*>&gt;</parse_citm_catalog_json,*citm_catalog.json*>
+| <<parse_citm_catalog_json,*citm_catalog.json*>>
 | 1.69MB
 | 一个包含多种嵌套结构、数据类型和长度的大型 JSON。
 
-| &lt;<parse_github_events_json,*github_events.json*>&gt;</parse_github_events_json,*github_events.json*>
+| <<parse_github_events_json,*github_events.json*>>
 | 64KB
 | 一份来自 GitHub Events API 的数据导出。
 
-| &lt;<parse_gsoc_2018_json,*gsoc-2018.json*>&gt;</parse_gsoc_2018_json,*gsoc-2018.json*>
+| <<parse_gsoc_2018_json,*gsoc-2018.json*>>
 | 3.25MB
 | Google Summer of Code 2018 data.
 
-| &lt;<parse_instruments_json,*instruments.json*>&gt;</parse_instruments_json,*instruments.json*>
+| <<parse_instruments_json,*instruments.json*>>
 | 216KB
 | 一个由大型对象组成的数组。
 
-| &lt;<parse_marine_ik_json,*marine_ik.json*>&gt;</parse_marine_ik_json,*marine_ik.json*>
+| <<parse_marine_ik_json,*marine_ik.json*>>
 | 2.91MB
 | 一个以 JSON 格式序列化的 three.js 示例模型。
 
-| &lt;<parse_mesh_json,*mesh.json*>&gt;</parse_mesh_json,*mesh.json*>
+| <<parse_mesh_json,*mesh.json*>>
 | 707KB
 | 一个表示三维网格的 JSON，包含大量浮点数。
 
-| &lt;<parse_mesh_pretty_json,*mesh.pretty.json*>&gt;</parse_mesh_pretty_json,*mesh.pretty.json*>
+| <<parse_mesh_pretty_json,*mesh.pretty.json*>>
 | 1.54MB
 | 添加了空格的 mesh.json。
 
-| &lt;<parse_numbers_json,*numbers.json*>&gt;</parse_numbers_json,*numbers.json*>
+| <<parse_numbers_json,*numbers.json*>>
 | 147KB
 | 一个仅包含浮点数的数组。
 
-| &lt;<parse_random_json,*random.json*>&gt;</parse_random_json,*random.json*>
+| <<parse_random_json,*random.json*>>
 | 499KB
 | 一个包含大量 Cyrillic（西里尔）字符的 JSON。
 
-| &lt;<parse_twitter_json,*twitter.json*>&gt;</parse_twitter_json,*twitter.json*>
+| <<parse_twitter_json,*twitter.json*>>
 | 617KB
 | 一份来自 Twitter API 的数据导出。
 
-| &lt;<parse_twitterescaped_json,*twitterescaped.json*>&gt;</parse_twitterescaped_json,*twitterescaped.json*>
+| <<parse_twitterescaped_json,*twitterescaped.json*>>
 | 550KB
 | 移除空格并将非 ASCII 字符替换为 Unicode 转义符的 twitter.json。
 
-| &lt;<parse_update_center_json,*update-center.json*>&gt;</parse_update_center_json,*update-center.json*>
+| <<parse_update_center_json,*update-center.json*>>
 | 521KB
 | 一份来自 Twitter API 的数据导出。
 |===
