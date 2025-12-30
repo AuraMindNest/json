@@ -31,9 +31,9 @@ Official repository: https://github.com/boostorg/json
 
 [source]
 ----
-#include <boost json.hpp="">
+#include <boost/json.hpp>
 using namespace boost::json;
-</boost>----
+----
 ====
 
 [#quick_look_values]
