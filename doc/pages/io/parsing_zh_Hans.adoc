@@ -1,0 +1,181 @@
+////
+Copyright (c) 2019 Vinnie Falco (vinnie.falco@gmail.com)
+Copyright (c) 2025 Dmitry Arkhipov (grisumbras@yandex.ru)
+
+Distributed under the Boost Software License, Version 1.0. (See accompanying
+file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+Official repository: https://github.com/boostorg/json
+////
+
+[pagelevels=1]
+= 解析
+解析是将序列化的 JSON 文本验证并分解为元素的过程。该库提供以下函数和类型以协助解析：
+
+.解析函数与类型
+|===
+|名称e|描述
+
+| <<ref_basic_parser>>
+| 一种 SAX 推送解析器实现，将序列化的 JSON 文本转换为对用户提供处理器的成员函数调用序列。这允许为内存中文档表示实现自定义行为。
+
+| <<ref_parse_options>>
+| 用于选择解析期间启用哪些扩展的结构体。
+
+| <<ref_parse>>
+| 解析包含完整序列化 JSON 文本的字符串，并返回一个 <<ref_value>>。
+
+| <<ref_parser>>
+| 一种有状态的 DOM 解析器对象，可用于高效解析一系列包含在单个连续字符缓冲区中的 JSON 文本，每个结果返回为 <<ref_value>>。
+
+| <<ref_stream_parser>>
+| 一种有状态的 DOM 解析器对象，可用于增量高效解析一系列 JSON 文本，每个结果返回为 <<ref_value>>。
+
+| <<ref_value_stack>>
+| 用于高效构建 <<ref_value>> 的低级基础组件。解析器在内部使用此组件，用户也可用它适配外部解析器以生成此库的容器。
+|===
+
+<<ref_parse>> 函数提供简单接口，通过单次函数调用将序列化 JSON 文本转换为 <<ref_value>>。此重载使用异常指示错误：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_1,indent=0]
+----
+
+或者，可使用 {ref_error_code}：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_2,indent=0]
+----
+
+即使使用错误码，底层 {ref_memory_resource} 抛出的异常仍可能出现：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_3,indent=0]
+----
+
+前述示例返回的 <<ref_value>> 使用 <<default_memory_resource,默认内存资源>>。以下代码使用 <<ref_monotonic_resource>> 可加速解析。`jv` 被标记为 `const` 以防止后续修改，因为使用单调资源的容器在变更时会浪费内存。
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_4,indent=0]
+----
+
+== 非标准 JSON
+除非另有说明，本库解析器为严格模式，仅识别有效的标准 JSON。可通过填充 <<ref_parse_options>> 结构体并传值来配置解析器允许特定非标准扩展。默认所有扩展均禁用：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_5,indent=0]
+----
+
+使用 {cpp}20 或更高版本构建时，可在 <<ref_parse_options>> 中使用 https://en.cppreference.com/w/cpp/language/aggregate_initialization#Designated_initializers[指定初始化器]：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_6,indent=0]
+----
+
+启用 `allow_invalid_utf16` 后，解析器在遇到非法前导、尾随或半个代理项时不会抛出错误，而是将无效 UTF-16 码点替换为 Unicode 替换字符。
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_15,indent=0]
+----
+
+CAUTION: 启用注释支持时需特别注意读取输入时勿丢弃空白字符。例如，`std::getline` 会移除生成字符串中的行尾字符。
+
+== 全精度数字解析
+库解析数字的默认算法速度快，但可能导致轻微精度损失。某些应用可能不适用此方式，因此提供选项启用替代算法（无精度损失但速度较慢）。此操作同样需使用 <<ref_parse_options>> 结构体。
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_precise,indent=0]
+----
+
+注意全精度数字解析要求算法看到完整数字。这意味着与 <<ref_stream_parser>> 配合使用时，可能需要额外内存分配来存储解析器已接受的部分数字。库会尽力避免此类分配。
+
+== 解析器
+<<ref_parser>> 和 <<ref_stream_parser>> 实例提供超越 <<ref_parse>> 自由函数的功能：
+
+* 更精细的内存控制
+* 流式 API，增量解析输入 JSON
+* 解析多个 JSON 文本时性能更优
+* 忽略 JSON 文本结束后的非 JSON 内容
+
+解析器实现使用临时存储空间在解析期间累积值。使用 <<ref_parse>> 自由函数时，此存储空间在每次调用中分配释放。但通过声明 <<ref_parser>> 或 <<ref_stream_parser>> 实例，解析多个 JSON 文本时可复用此临时存储，减少动态内存分配总数。
+
+使用 <<ref_parser>> 需声明实例，然后调用一次 <<ref_parser_write>> 传入包含输入 JSON 的缓冲区，最后调用 <<ref_parser_release>> 在成功时获取结果 <<ref_value>> 的所有权。此示例将解析器实例持久化为类成员以跨调用复用：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_7,indent=0]
+----
+
+某些协议可能在 JSON 文本后跟随不同格式的数据。仍可使用 <<ref_parser_write_some>> 函数解析 JSON 部分。成功时返回值指示从输入中消耗的字符数（不包括非 JSON 字符）：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_8,indent=0]
+----
+
+解析器实例可通过解析选项构造，以识别部分非标准 JSON 扩展：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_9,indent=0]
+----
+
+== 流式解析器
+<<ref_stream_parser>> 实现了 https://en.wikipedia.org/wiki/Online_algorithm[__流式算法__]；它允许使用一个或多个连续字符缓冲区增量处理大型 JSON 输入。整个输入 JSON 无需一次性加载到内存中。网络服务器可使用流式接口以固定大小处理传入的 JSON，具有以下优势：
+
+* 每个 I/O 周期的 CPU 消耗有界
+* 每个 I/O 周期的内存消耗有界
+* 减少抖动、不公平性和延迟
+* 处理完整输入所需总内存更少
+
+使用 <<ref_stream_parser>> 需声明实例，然后调用零次或多次 <<ref_stream_parser_write>> 传入连续的输入 JSON 缓冲区。无更多缓冲区时调用 <<ref_stream_parser_finish>>。若解析完成，则成功调用 `write` 或 `finish` 后 <<ref_stream_parser_done>> 函数返回 `true`。
+
+下例从标准输入逐行解析 JSON 文本（使用错误码）。函数 <<ref_stream_parser_finish>> 用于指示输入结束：
+
+CAUTION: 若启用注释，因使用 `std::getline`（参见 <<non_standard_json>> 章节警告），此示例将中断。
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_10,indent=0]
+----
+
+我们可通过从行序列提取_多个_ JSON 值进一步复杂化示例：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_14,indent=0]
+----
+
+== 内存控制
+默认构造后或无参调用 <<ref_stream_parser_reset>> 后，成功解析操作产生的 <<ref_value>> 使用默认内存资源。要使用不同内存资源，可调用带资源的 `reset`。此处使用 <<ref_monotonic_resource>>（针对解析优化但不适合后续修改）：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_11,indent=0]
+----
+
+为实现性能和内存效率，解析器使用临时存储区保存中间结果。解析多个 JSON 文本时可复用此存储，减少内存分配调用总数从而提升性能。构造时可指定用于此临时存储区的内存资源（否则使用默认资源）。除内存资源外，解析器可利用调用方拥有的缓冲区作临时存储，避免小输入时的动态分配。下例使用 4KB 临时缓冲区，必要时回退到默认内存资源：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_12,indent=0]
+----
+
+== 避免动态分配
+通过仔细指定缓冲区和内存资源，当整个 JSON 文本在单个字符缓冲区可用时，可完全消除解析 JSON 的所有动态分配，如下所示：
+
+[source]
+----
+include::../../../test/doc_parsing.cpp[tag=doc_parsing_13,indent=0]
+----
+
+== 自定义解析器
+希望实现自定义解析策略的用户可创建与 <<ref_basic_parser>> 实例配合使用的处理器。该处理器需实现 SAX 事件接口要求的函数签名。<<examples_validate>> 示例中定义的 "null" 解析器会丢弃解析结果，用于实现验证 JSON 文本有效性的函数。
